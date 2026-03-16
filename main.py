@@ -1,12 +1,13 @@
 import customtkinter as ctk
+from script.graphic.menu_home import apply_appearance
 from script.graphic.sidebar import Sidebar
-from script.graphic.Dashboar import Dasboard
+from script.graphic.dashboard import Dashboard
 from script.graphic.account_management_window import AccountManagementWindow
-from script.graphic.register_window import Register_windows
+from script.graphic.register_window import RegisterWindow
+from script.graphic.home_window import HomeWindow
 
 
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("blue")
+apply_appearance()
 
 
 class BudgetBuddyApp(ctk.CTk):
@@ -15,32 +16,69 @@ class BudgetBuddyApp(ctk.CTk):
         self.title("Budget Buddy")
         self.geometry("900x620")
         self.minsize(700, 500)
+
         self._account_window = None
-        self._register_window = None
 
-        self.sidebar = Sidebar(
-            self,
-            nav_commands={
-                "Dashboard":    self._show_dashboard,
-                "Transactions": self._show_transactions,
-                "Reports":      self._show_reports,
-            },
-            on_account=self._open_account_management,
-        )
-        self.sidebar.pack(side="left", fill="y")
+        self.root_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.root_frame.pack(fill="both", expand=True)
 
-        self.main_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        self.main_frame.pack(side="left", fill="both", expand=True, padx=20, pady=20)
+        self._show_login()
 
-        self._show_dashboard()
+    # ── Helpers ──────────────────────────────────────────────────────────────
+
+    def _clear_root(self):
+        for widget in self.root_frame.winfo_children():
+            widget.destroy()
 
     def _clear_main(self):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
+    # ── Écrans pré-connexion ─────────────────────────────────────────────────
+
+    def _show_login(self):
+        self._clear_root()
+        HomeWindow(
+            self.root_frame,
+            on_login=self._on_login_success,
+            on_register=self._show_register,
+        ).pack(fill="both", expand=True)
+
+    def _show_register(self):
+        self._clear_root()
+        RegisterWindow(
+            self.root_frame,
+            on_register=self._on_login_success,
+            on_back=self._show_login,
+        ).pack(fill="both", expand=True)
+
+    # ── Après connexion réussie ──────────────────────────────────────────────
+
+    def _on_login_success(self):
+        self._clear_root()
+
+        self.sidebar = Sidebar(
+            self.root_frame,
+            nav_commands={
+                "Dashboard":     self._show_dashboard,
+                "Transactions":  self._show_transactions,
+                "Notifications": self._show_reports,
+            },
+            on_account=self._open_account_management,
+        )
+        self.sidebar.pack(side="left", fill="y")
+
+        self.main_frame = ctk.CTkFrame(
+            self.root_frame, corner_radius=0, fg_color="transparent")
+        self.main_frame.pack(side="left", fill="both", expand=True, padx=20, pady=20)
+
+        self._show_dashboard()
+
+    # ── Vues principales ─────────────────────────────────────────────────────
+
     def _show_dashboard(self):
         self._clear_main()
-        Dasboard(self.main_frame).pack(fill="both", expand=True)
+        Dashboard(self.main_frame).pack(fill="both", expand=True)
 
     def _show_transactions(self):
         self._clear_main()
@@ -66,26 +104,7 @@ class BudgetBuddyApp(ctk.CTk):
             font=ctk.CTkFont(size=14),
         ).place(relx=0.5, rely=0.5, anchor="center")
 
-    def _open_account_management(self):
-        if self._account_window is None or not self._account_window.winfo_exists():
-            self._account_window = AccountManagementWindow(master=self)
-            self._account_window.focus()
-        else:
-            self._account_window.focus()
-
-    def _open_register(self):
-        if self._register_window is None or not self._register_window.winfo_exists():
-            self._register_window = Register_windows(master=self)
-            self._register_window.focus()
-        else:
-            self._register_window.focus()
-
-
-if __name__ == "__main__":
-    app = BudgetBuddyApp()
-    app.mainloop()
-
-    
+    # ── Fenêtres secondaires ─────────────────────────────────────────────────
 
     def _open_account_management(self):
         if self._account_window is None or not self._account_window.winfo_exists():
