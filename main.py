@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from script.graphic.sidebar import Sidebar
-from script.graphic.dashboard import Dasboard
+from script.graphic.Dashboar import Dasboard
 from script.graphic.account_management_window import AccountManagementWindow
 from script.graphic.register_window import Register_windows
 
@@ -16,6 +16,7 @@ class BudgetBuddyApp(ctk.CTk):
         self.geometry("900x620")
         self.minsize(700, 500)
         self._account_window = None
+        self._register_window = None
 
         self.sidebar = Sidebar(
             self,
@@ -37,9 +38,52 @@ class BudgetBuddyApp(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-    
+    def _show_dashboard(self):
+        self._clear_main()
+        Dasboard(self.main_frame).pack(fill="both", expand=True)
 
-   
+    def _show_transactions(self):
+        self._clear_main()
+        frame = ctk.CTkFrame(self.main_frame, corner_radius=10, height=300)
+        frame.pack(fill="x")
+        frame.pack_propagate(False)
+        ctk.CTkLabel(
+            frame,
+            text="📋  Les transactions s'afficheront ici",
+            text_color="gray",
+            font=ctk.CTkFont(size=14),
+        ).place(relx=0.5, rely=0.5, anchor="center")
+
+    def _show_reports(self):
+        self._clear_main()
+        frame = ctk.CTkFrame(self.main_frame, corner_radius=10, height=300)
+        frame.pack(fill="x")
+        frame.pack_propagate(False)
+        ctk.CTkLabel(
+            frame,
+            text="📈  Les rapports s'afficheront ici",
+            text_color="gray",
+            font=ctk.CTkFont(size=14),
+        ).place(relx=0.5, rely=0.5, anchor="center")
+
+    def _open_account_management(self):
+        if self._account_window is None or not self._account_window.winfo_exists():
+            self._account_window = AccountManagementWindow(master=self)
+            self._account_window.focus()
+        else:
+            self._account_window.focus()
+
+    def _open_register(self):
+        if self._register_window is None or not self._register_window.winfo_exists():
+            self._register_window = Register_windows(master=self)
+            self._register_window.focus()
+        else:
+            self._register_window.focus()
+
+
+if __name__ == "__main__":
+    app = BudgetBuddyApp()
+    app.mainloop()
 
     
 

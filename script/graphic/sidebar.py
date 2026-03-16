@@ -1,46 +1,53 @@
 import customtkinter as ctk
 
-class Sidebar(ctk.CTkFrame):
-    def __init__(self, master, nav_commands, on_account):
-        super().__init__(master, width=200, corner_radius=0, fg_color="#2a2a2a")
-        self.nav_commands = nav_commands
-        self.on_account = on_account
-        self._build()
 
-    def _build(self):
-        # Logo / titre
+class Sidebar(ctk.CTkFrame):
+    def __init__(self, master, nav_commands: dict, on_account):
+        super().__init__(master, width=200, corner_radius=0)
+        self.pack_propagate(False)
+        self._build(nav_commands, on_account)
+
+    def _build(self, nav_commands, on_account):
+        # Logo
         ctk.CTkLabel(
             self,
-            text="💰 Budget Buddy",
-            font=ctk.CTkFont(size=20, weight="bold"),
-        ).pack(pady=(24, 12))
+            text="💰 Budget\n    Buddy",
+            font=ctk.CTkFont(size=22, weight="bold"),
+            justify="left",
+        ).pack(pady=(28, 24), padx=20, anchor="w")
 
-        # Boutons de navigation
-        for name, cmd in self.nav_commands.items():
+        # Nav buttons
+        nav_icons = {
+            "Dashboard": "📊",
+            "Transactions": "📁",
+            "Reports": "📈",
+        }
+        for label, cmd in nav_commands.items():
+            icon = nav_icons.get(label, "•")
             ctk.CTkButton(
                 self,
-                text=name,
-                width=180,
+                text=f"{icon}  {label}",
+                anchor="w",
                 height=40,
-                font=ctk.CTkFont(size=14),
                 fg_color="transparent",
-                border_width=0,
                 text_color=("gray10", "gray90"),
+                hover_color=("gray85", "gray25"),
+                font=ctk.CTkFont(size=14),
                 command=cmd,
-            ).pack(pady=8)
+            ).pack(fill="x", padx=12, pady=3)
 
         # Spacer
-        ctk.CTkFrame(self, fg_color="transparent").pack(expand=True)
+        ctk.CTkFrame(self, fg_color="transparent").pack(fill="both", expand=True)
 
-        # Bouton compte
+        # Account button (bas)
         ctk.CTkButton(
             self,
-            text="⚙️ Account",
-            width=180,
+            text="⚙️  Account",
+            anchor="w",
             height=40,
-            font=ctk.CTkFont(size=14),
             fg_color="transparent",
-            border_width=0,
             text_color=("gray10", "gray90"),
-            command=self.on_account,
-        ).pack(pady=(0, 24))
+            hover_color=("gray85", "gray25"),
+            font=ctk.CTkFont(size=14),
+            command=on_account,
+        ).pack(fill="x", padx=12, pady=(0, 16))

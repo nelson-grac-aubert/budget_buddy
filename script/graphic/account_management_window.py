@@ -75,3 +75,5 @@ class AccountManagementWindow(ctk.CTkToplevel):
 
     def update_email(self):
         print("Update Email button clicked")
+
+    # login and register windows dans register window et home window respectivement, à appeler dans main.py  
