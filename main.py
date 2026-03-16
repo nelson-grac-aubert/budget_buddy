@@ -24,7 +24,7 @@ class BudgetBuddyApp(ctk.CTk):
 
         self._show_login()
 
-    # ── Helpers ──────────────────────────────────────────────────────────────
+    # ── Helpers 
 
     def _clear_root(self):
         for widget in self.root_frame.winfo_children():
@@ -34,7 +34,7 @@ class BudgetBuddyApp(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-    # ── Écrans pré-connexion ─────────────────────────────────────────────────
+    # ── Écrans pré-connexion
 
     def _show_login(self):
         self._clear_root()
@@ -52,7 +52,7 @@ class BudgetBuddyApp(ctk.CTk):
             on_back=self._show_login,
         ).pack(fill="both", expand=True)
 
-    # ── Après connexion réussie ──────────────────────────────────────────────
+    # ── Après connexion réussie
 
     def _on_login_success(self):
         self._clear_root()
@@ -74,7 +74,7 @@ class BudgetBuddyApp(ctk.CTk):
 
         self._show_dashboard()
 
-    # ── Vues principales ─────────────────────────────────────────────────────
+    # ── Vues principales 
 
     def _show_dashboard(self):
         self._clear_main()
@@ -104,7 +104,7 @@ class BudgetBuddyApp(ctk.CTk):
             font=ctk.CTkFont(size=14),
         ).place(relx=0.5, rely=0.5, anchor="center")
 
-    # ── Fenêtres secondaires ─────────────────────────────────────────────────
+    # ── Fenêtres secondaires 
 
     def _open_account_management(self):
         if self._account_window is None or not self._account_window.winfo_exists():
