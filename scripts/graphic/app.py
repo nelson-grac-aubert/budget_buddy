@@ -5,7 +5,7 @@ from scripts.graphic.account_management_window import AccountManagementWindow
 from scripts.graphic.register_window import RegisterWindow
 from scripts.graphic.home_window import HomeWindow
 from scripts.graphic.menu_home import HomeMenu
-from scripts.graphic.transaction_window import *
+from scripts.graphic.transaction_window import TransactionWindow, _ReleveView, get_transactions
 
 
 class BudgetBuddyApp(ctk.CTk):
@@ -22,8 +22,6 @@ class BudgetBuddyApp(ctk.CTk):
 
         self._show_landing()
 
-    
-
     def _clear_root(self):
         for widget in self.root_frame.winfo_children():
             widget.destroy()
@@ -32,7 +30,7 @@ class BudgetBuddyApp(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-    # ── Écrans pré-connexion 
+    # ── Écrans pré-connexion ──
 
     def _show_landing(self):
         self._clear_root()
@@ -59,7 +57,7 @@ class BudgetBuddyApp(ctk.CTk):
             on_back=self._show_landing,
         ).pack(fill="both", expand=True)
 
-    # ── Après connexion réussie 
+    # ── Après connexion réussie ──
 
     def _on_login_success(self):
         self._clear_root()
@@ -81,15 +79,26 @@ class BudgetBuddyApp(ctk.CTk):
 
         self._show_dashboard()
 
-    # ── Vues principales 
+    # ── Vues principales ──
 
     def _show_dashboard(self):
         self._clear_main()
-        Dashboard(self.main_frame).pack(fill="both", expand=True)
+        Dashboard(
+            self.main_frame,
+            on_releve=self._show_releve,
+        ).pack(fill="both", expand=True)
 
     def _show_transactions(self):
         self._clear_main()
-        TransactionWindow(self.main_frame).pack(fill="both", expand=True)# TODO : implémenter la vue transactions
+        TransactionWindow(self.main_frame).pack(fill="both", expand=True)
+
+    def _show_releve(self):
+        self._clear_main()
+        _ReleveView(
+            self.main_frame,
+            on_back=self._show_dashboard,
+            transactions=get_transactions(),
+        ).pack(fill="both", expand=True)
 
     def _show_reports(self):
         self._clear_main()
@@ -103,7 +112,7 @@ class BudgetBuddyApp(ctk.CTk):
             font=ctk.CTkFont(size=14),
         ).place(relx=0.5, rely=0.5, anchor="center")
 
-    # ── Fenêtres secondaires 
+    # ── Fenêtres secondaires ──
 
     def _open_account_management(self):
         if self._account_window is None or not self._account_window.winfo_exists():

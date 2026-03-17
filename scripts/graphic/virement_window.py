@@ -4,16 +4,16 @@ import customtkinter as ctk
 class VirementWindow(ctk.CTkToplevel):
     """Fenêtre modale pour effectuer un virement."""
 
-    def __init__(self, master=None):
+    def __init__(self, master=None, on_success=None):
         super().__init__(master)
         self.title("Nouveau virement")
         self.geometry("420x420")
         self.resizable(False, False)
         self.grab_set()
+        self._on_success = on_success
         self._build()
 
     def _build(self):
-        # Titre
         ctk.CTkLabel(
             self,
             text="💸  Faire un virement",
@@ -27,41 +27,33 @@ class VirementWindow(ctk.CTkToplevel):
             text_color="gray",
         ).pack(pady=(0, 20))
 
-        # Séparateur
         ctk.CTkFrame(self, height=1, fg_color="#3a3a3a").pack(
             fill="x", padx=30, pady=(0, 20))
 
-        # Bénéficiaire
         ctk.CTkLabel(self, text="Bénéficiaire", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.beneficiaire_entry = ctk.CTkEntry(
             self, placeholder_text="Nom ou IBAN", height=38)
         self.beneficiaire_entry.pack(fill="x", padx=30, pady=(4, 14))
 
-        # Montant
         ctk.CTkLabel(self, text="Montant (€)", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.montant_entry = ctk.CTkEntry(
             self, placeholder_text="0,00", height=38)
         self.montant_entry.pack(fill="x", padx=30, pady=(4, 14))
 
-        # Motif
         ctk.CTkLabel(self, text="Motif (optionnel)", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.motif_entry = ctk.CTkEntry(
             self, placeholder_text="Ex : Remboursement loyer", height=38)
         self.motif_entry.pack(fill="x", padx=30, pady=(4, 24))
 
-        # Boutons
         btns = ctk.CTkFrame(self, fg_color="transparent")
         btns.pack(fill="x", padx=30)
 
         ctk.CTkButton(
-            btns,
-            text="Annuler",
-            height=40,
-            fg_color="transparent",
-            border_width=2,
+            btns, text="Annuler", height=40,
+            fg_color="transparent", border_width=2,
             text_color=("gray10", "gray90"),
             hover_color=("gray85", "gray25"),
             font=ctk.CTkFont(size=13),
@@ -69,19 +61,21 @@ class VirementWindow(ctk.CTkToplevel):
         ).pack(side="left", expand=True, padx=(0, 8))
 
         ctk.CTkButton(
-            btns,
-            text="Confirmer",
-            height=40,
-            fg_color="#7c3aed",
-            hover_color="#6d28d9",
+            btns, text="Confirmer", height=40,
+            fg_color="#7c3aed", hover_color="#6d28d9",
             font=ctk.CTkFont(size=13, weight="bold"),
             command=self._handle_virement,
         ).pack(side="left", expand=True)
 
     def _handle_virement(self):
-        beneficiaire = self.beneficiaire_entry.get()
-        montant      = self.montant_entry.get()
-        motif        = self.motif_entry.get()
-        # TODO : ajouter la logique de virement
+        beneficiaire = self.beneficiaire_entry.get().strip()
+        montant      = self.montant_entry.get().strip()
+        motif        = self.motif_entry.get().strip()
+        # TODO : logique de virement
         print(f"Virement → {beneficiaire} | {montant} € | {motif}")
         self.destroy()
+        if self._on_success:
+            self._on_success(
+                "💸 Virement effectué",
+                f"{montant} € envoyé à {beneficiaire}" + (f" — {motif}" if motif else ""),
+            )
