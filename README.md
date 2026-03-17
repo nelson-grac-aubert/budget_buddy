@@ -11,6 +11,6 @@ In a MySQL Shell using the root user, create a user that will be used by our pro
 
 ```bash
 CREATE USER 'budget_buddy_test'@'%' IDENTIFIED BY 'strong_password_budget_buddies';
-GRANT ALL PRIVILEGES ON astérisque.astérisque TO 'budget_buddy_test'@'%' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'budget_buddy_test'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 ```
