@@ -96,14 +96,14 @@ def drop_database_completely(host="localhost", user="root", password=""):
 
 if __name__ == "__main__":
     HOST = "localhost"
-    USER = "root"
-    PASSWORD = "Misstouille83!sql"  # temporaire
+    USER = "budget_buddy_test"
+    PASSWORD = "strong_password_budget_buddies"  # temporaire
 
     # 1. Créer toute la DB (structure + seed)
-    initialize_all(host=HOST, user=USER, password=PASSWORD)
+    # initialize_all(host=HOST, user=USER, password=PASSWORD)
 
     # 2. Créer John Doe
-    create_john_doe(host=HOST, user=USER, password=PASSWORD)
+    # create_john_doe(host=HOST, user=USER, password=PASSWORD)
 
     # 3. Créer Jane Doe
     # create_jane_doe(host=HOST, user=USER, password=PASSWORD)
