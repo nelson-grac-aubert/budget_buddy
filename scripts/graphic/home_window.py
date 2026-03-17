@@ -9,6 +9,7 @@ class HomeWindow(ctk.CTkFrame):
         self._on_login    = on_login
         self._on_register = on_register
         self._on_back     = on_back
+        self._pwd_visible = False
         self._build()
 
     def _build(self):
@@ -29,18 +30,37 @@ class HomeWindow(ctk.CTkFrame):
             text_color="gray",
         ).pack(pady=(0, 24))
 
+        # Email
         ctk.CTkLabel(container, text="Email", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=32)
         self.email_entry = ctk.CTkEntry(
             container, placeholder_text="exemple@email.com", height=38)
         self.email_entry.pack(fill="x", padx=32, pady=(4, 14))
 
+        # Mot de passe
         ctk.CTkLabel(container, text="Mot de passe", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=32)
-        self.password_entry = ctk.CTkEntry(
-            container, placeholder_text="••••••••", show="•", height=38)
-        self.password_entry.pack(fill="x", padx=32, pady=(4, 24))
 
+        pwd_row = ctk.CTkFrame(container, fg_color="transparent")
+        pwd_row.pack(fill="x", padx=32, pady=(4, 24))
+
+        self.password_entry = ctk.CTkEntry(
+            pwd_row, placeholder_text="••••••••", show="•", height=38)
+        self.password_entry.pack(side="left", fill="x", expand=True)
+
+        self.eye_btn = ctk.CTkButton(
+            pwd_row,
+            text="🙈",
+            width=38, height=38,
+            corner_radius=8,
+            fg_color="transparent",
+            hover_color=("gray85", "gray25"),
+            font=ctk.CTkFont(size=16),
+            command=self._toggle_password,
+        )
+        self.eye_btn.pack(side="left", padx=(4, 0))
+
+        # Connexion
         ctk.CTkButton(
             container,
             text="Se connecter",
@@ -68,6 +88,11 @@ class HomeWindow(ctk.CTkFrame):
             font=ctk.CTkFont(size=12),
             command=self._on_back,
         ).pack(pady=(4, 16))
+
+    def _toggle_password(self):
+        self._pwd_visible = not self._pwd_visible
+        self.password_entry.configure(show="" if self._pwd_visible else "•")
+        self.eye_btn.configure(text="👁" if self._pwd_visible else "🙈")
 
     def _handle_login(self):
         email    = self.email_entry.get()
