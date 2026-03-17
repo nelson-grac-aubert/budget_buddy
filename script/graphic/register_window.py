@@ -2,20 +2,16 @@ import customtkinter as ctk
 
 
 class RegisterWindow(ctk.CTkFrame):
-    """Fenêtre d'inscription."""
+    """Formulaire d'inscription."""
 
     def __init__(self, master, on_register, on_back):
-        """
-        on_register : callback appelé après inscription réussie
-        on_back     : callback pour revenir à la connexion
-        """
         super().__init__(master, corner_radius=0, fg_color="transparent")
         self._on_register = on_register
         self._on_back     = on_back
         self._build()
 
     def _build(self):
-        container = ctk.CTkFrame(self, width=360, height=480, corner_radius=16)
+        container = ctk.CTkFrame(self, width=360, height=500, corner_radius=16)
         container.place(relx=0.5, rely=0.5, anchor="center")
         container.pack_propagate(False)
 
@@ -32,28 +28,24 @@ class RegisterWindow(ctk.CTkFrame):
             text_color="gray",
         ).pack(pady=(0, 24))
 
-        # Nom d'utilisateur
         ctk.CTkLabel(container, text="Nom d'utilisateur", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=32)
         self.username_entry = ctk.CTkEntry(
             container, placeholder_text="Jean Dupont", height=38)
         self.username_entry.pack(fill="x", padx=32, pady=(4, 14))
 
-        # Email
         ctk.CTkLabel(container, text="Email", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=32)
         self.email_entry = ctk.CTkEntry(
             container, placeholder_text="exemple@email.com", height=38)
         self.email_entry.pack(fill="x", padx=32, pady=(4, 14))
 
-        # Mot de passe
         ctk.CTkLabel(container, text="Mot de passe", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=32)
         self.password_entry = ctk.CTkEntry(
             container, placeholder_text="••••••••", show="•", height=38)
         self.password_entry.pack(fill="x", padx=32, pady=(4, 24))
 
-        # Bouton inscription
         ctk.CTkButton(
             container,
             text="S'inscrire",
@@ -62,10 +54,9 @@ class RegisterWindow(ctk.CTkFrame):
             command=self._handle_register,
         ).pack(fill="x", padx=32)
 
-        # Retour connexion
         ctk.CTkButton(
             container,
-            text="Déjà un compte ? Se connecter",
+            text="← Retour",
             fg_color="transparent",
             text_color="gray",
             hover_color=("gray85", "gray25"),
