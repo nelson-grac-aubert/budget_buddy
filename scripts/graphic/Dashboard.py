@@ -86,7 +86,8 @@ class Dashboard(ctk.CTkFrame):
                  monthly_balance: dict = _MONTHLY_BALANCE,
                  income: float         = _INCOME,
                  expenses: float       = _EXPENSES,
-                 on_releve=None):
+                 on_releve=None,
+                 on_notify=None):
         super().__init__(master, corner_radius=0, fg_color="transparent")
         self._monthly_balance = monthly_balance
         self._income          = income
@@ -95,6 +96,7 @@ class Dashboard(ctk.CTkFrame):
         self._virement_window = None
         self._retrait_window  = None
         self._on_releve       = on_releve
+        self._on_notify       = on_notify
         self._build()
 
     def _build(self):
@@ -184,6 +186,8 @@ class Dashboard(ctk.CTkFrame):
 
     def _notify(self, title: str, message: str, kind: str = "success"):
         _Toast(self.winfo_toplevel(), title, message, kind)
+        if self._on_notify:
+            self._on_notify(title, message, kind)
 
     # ── Fenêtres secondaires ──────────────────────────────────────────────── #
 

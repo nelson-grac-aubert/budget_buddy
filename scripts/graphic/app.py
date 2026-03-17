@@ -6,6 +6,8 @@ from scripts.graphic.register_window import RegisterWindow
 from scripts.graphic.home_window import HomeWindow
 from scripts.graphic.menu_home import HomeMenu
 from scripts.graphic.transaction_window import TransactionWindow, _ReleveView, get_transactions
+from scripts.graphic.notification_view import NotificationView
+from datetime import datetime
 
 
 class BudgetBuddyApp(ctk.CTk):
@@ -15,7 +17,8 @@ class BudgetBuddyApp(ctk.CTk):
         self.geometry("900x620")
         self.minsize(700, 500)
 
-        self._account_window = None
+        self._account_window   = None
+        self._notifications    = []   # historique des notifications
 
         self.root_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.root_frame.pack(fill="both", expand=True)
@@ -86,6 +89,7 @@ class BudgetBuddyApp(ctk.CTk):
         Dashboard(
             self.main_frame,
             on_releve=self._show_releve,
+            on_notify=self._on_new_notification,
         ).pack(fill="both", expand=True)
 
     def _show_transactions(self):
@@ -102,15 +106,23 @@ class BudgetBuddyApp(ctk.CTk):
 
     def _show_reports(self):
         self._clear_main()
-        frame = ctk.CTkFrame(self.main_frame, corner_radius=10, height=300)
-        frame.pack(fill="x")
-        frame.pack_propagate(False)
-        ctk.CTkLabel(
-            frame,
-            text="📈  Les rapports s'afficheront ici",
-            text_color="gray",
-            font=ctk.CTkFont(size=14),
-        ).place(relx=0.5, rely=0.5, anchor="center")
+        self.sidebar.clear_notifications()
+        NotificationView(
+            self.main_frame,
+            notifications=self._notifications,
+        ).pack(fill="both", expand=True)
+
+    # ── Gestion des notifications ──
+
+    def _on_new_notification(self, title: str, message: str, kind: str = "success"):
+        """Stocke la notification et incrémente le badge."""
+        self._notifications.append({
+            "title":   title,
+            "message": message,
+            "kind":    kind,
+            "time":    datetime.now().strftime("%H:%M"),
+        })
+        self.sidebar.add_notification()
 
     # ── Fenêtres secondaires ──
 
