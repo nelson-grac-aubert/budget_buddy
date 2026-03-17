@@ -9,7 +9,7 @@ class TransactionWindow(ctk.CTkFrame):
 
     def __init__(self, master, user_id: int = 1):
         super().__init__(master, corner_radius=0, fg_color="transparent")
-        self._transactions = get_transactions(user_id)
+        self._transactions = get_transactions(user_id) # TODO : récupérer les transactions réelles de l'utilisateur
         self._build()
 
     def _build(self):
