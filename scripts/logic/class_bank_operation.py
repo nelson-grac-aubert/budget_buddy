@@ -1,5 +1,5 @@
 #class BankOperation : 
-# models/transaction.py
+# models/transaction
 from create_database import main
 from datetime import date
 import uuid
