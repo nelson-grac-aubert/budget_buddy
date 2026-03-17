@@ -5,6 +5,7 @@ from scripts.graphic.account_management_window import AccountManagementWindow
 from scripts.graphic.register_window import RegisterWindow
 from scripts.graphic.home_window import HomeWindow
 from scripts.graphic.menu_home import HomeMenu
+from scripts.graphic.transaction_window import *
 
 
 class BudgetBuddyApp(ctk.CTk):
@@ -21,7 +22,7 @@ class BudgetBuddyApp(ctk.CTk):
 
         self._show_landing()
 
-    # ── Helpers 
+    
 
     def _clear_root(self):
         for widget in self.root_frame.winfo_children():
@@ -88,15 +89,7 @@ class BudgetBuddyApp(ctk.CTk):
 
     def _show_transactions(self):
         self._clear_main()
-        frame = ctk.CTkFrame(self.main_frame, corner_radius=10, height=300)
-        frame.pack(fill="x")
-        frame.pack_propagate(False)
-        ctk.CTkLabel(
-            frame,
-            text="📋  Les transactions s'afficheront ici",
-            text_color="gray",
-            font=ctk.CTkFont(size=14),
-        ).place(relx=0.5, rely=0.5, anchor="center")
+        TransactionWindow(self.main_frame).pack(fill="both", expand=True)# TODO : implémenter la vue transactions
 
     def _show_reports(self):
         self._clear_main()
