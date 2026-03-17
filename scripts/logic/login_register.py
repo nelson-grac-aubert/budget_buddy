@@ -35,14 +35,14 @@ def validate_email(email):
 def get_connection():
     """Return a MySQL connection to the budget_buddy database."""
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
+        host="127.0.0.1",
+        user="budget_buddy_test",
+        password="strong_password_budget_buddies",
         database=DB_NAME
     )
 
 
-def insert_user(first_name, last_name, email, password_hash, user_type="standard"):
+def insert_user(first_name, last_name, email, password_hash, user_type="client"):
     """
     Insert a new user into the database.
     Returns (success: bool, message: str)

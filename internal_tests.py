@@ -3,7 +3,8 @@ import mysql.connector
 from scripts.logic.create_database import DB_NAME
 from scripts.logic.initialize import initialize_all
 
-def dump_database(host="localhost", user="root", password=""):
+
+def dump_database(host="127.0.0.1", user="budget_buddy_test", password="strong_password_budget_buddies"):
     connection = mysql.connector.connect(
         host=host,
         user=user,
@@ -12,7 +13,6 @@ def dump_database(host="localhost", user="root", password=""):
     )
     cursor = connection.cursor()
 
-    # Récupérer toutes les tables
     cursor.execute("SHOW TABLES")
     tables = cursor.fetchall()
 
@@ -21,12 +21,10 @@ def dump_database(host="localhost", user="root", password=""):
     for (table_name,) in tables:
         print(f"\n--- {table_name} ---")
 
-        # Récupérer les colonnes
         cursor.execute(f"DESCRIBE {table_name}")
         columns = [col[0] for col in cursor.fetchall()]
         print("Columns:", columns)
 
-        # Récupérer les données
         cursor.execute(f"SELECT * FROM {table_name}")
         rows = cursor.fetchall()
 
@@ -41,7 +39,7 @@ def dump_database(host="localhost", user="root", password=""):
     print("\n=== END OF DUMP ===\n")
 
 
-def create_john_doe(host="localhost", user="root", password=""):
+def create_john_doe(host="127.0.0.1", user="budget_buddy_test", password="strong_password_budget_buddies"):
     connection = mysql.connector.connect(
         host=host,
         user=user,
@@ -60,7 +58,8 @@ def create_john_doe(host="localhost", user="root", password=""):
     connection.close()
     print("[OK] John Doe created")
 
-def create_jane_doe(host="localhost", user="root", password=""):
+
+def create_jane_doe(host="127.0.0.1", user="budget_buddy_test", password="strong_password_budget_buddies"):
     connection = mysql.connector.connect(
         host=host,
         user=user,
@@ -80,7 +79,7 @@ def create_jane_doe(host="localhost", user="root", password=""):
     print("[OK] Jane Doe created")
 
 
-def drop_database_completely(host="localhost", user="root", password=""):
+def drop_database_completely(host="127.0.0.1", user="budget_buddy_test", password="strong_password_budget_buddies"):
     connection = mysql.connector.connect(
         host=host,
         user=user,
@@ -95,9 +94,9 @@ def drop_database_completely(host="localhost", user="root", password=""):
     connection.close()
 
 if __name__ == "__main__":
-    HOST = "localhost"
+    HOST = "127.0.0.1"
     USER = "budget_buddy_test"
-    PASSWORD = "strong_password_budget_buddies"  # temporaire
+    PASSWORD = "strong_password_budget_buddies"
 
     # 1. Créer toute la DB (structure + seed)
     # initialize_all(host=HOST, user=USER, password=PASSWORD)
