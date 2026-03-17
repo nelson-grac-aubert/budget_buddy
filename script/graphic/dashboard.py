@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from script.graphic.balance_chart import BalanceChart
+from script.graphic.virement_window import VirementWindow
 
 
 MONTHLY_BALANCE = {
@@ -25,6 +26,7 @@ QUICK_ACTIONS = [
 class Dashboard(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master, corner_radius=0, fg_color="transparent")
+        self._virement_window = None
         self._build()
 
     def _build(self):
@@ -59,6 +61,13 @@ class Dashboard(ctk.CTkFrame):
         actions_frame = ctk.CTkFrame(self, fg_color="transparent")
         actions_frame.pack(fill="x", pady=(0, 12))
 
+        action_commands = {
+            "Virement": self._open_virement,
+            "Paiement": lambda: print("Paiement clicked"),
+            "Épargne":  lambda: print("Épargne clicked"),
+            "Relevé":   lambda: print("Relevé clicked"),
+        }
+
         for icon, label in QUICK_ACTIONS:
             btn_frame = ctk.CTkFrame(actions_frame, fg_color="transparent")
             btn_frame.pack(side="left", expand=True)
@@ -72,7 +81,7 @@ class Dashboard(ctk.CTkFrame):
                 font=ctk.CTkFont(size=22),
                 fg_color="#1e1e2e",
                 hover_color="#4c1d95",
-                command=lambda l=label: print(f"{l} clicked"),
+                command=action_commands[label],
             ).pack()
 
             ctk.CTkLabel(
@@ -115,3 +124,10 @@ class Dashboard(ctk.CTkFrame):
                       corner_radius=16, font=ctk.CTkFont(size=18, weight="bold"),
                       fg_color="#7c3aed", hover_color="#6d28d9",
                       command=lambda: None).pack(side="left")
+
+    def _open_virement(self):
+        if self._virement_window is None or not self._virement_window.winfo_exists():
+            self._virement_window = VirementWindow(master=self)
+            self._virement_window.focus()
+        else:
+            self._virement_window.focus()
