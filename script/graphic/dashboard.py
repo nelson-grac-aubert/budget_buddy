@@ -14,6 +14,13 @@ INCOME   = 5_200
 EXPENSES = 3_180
 BALANCE  = list(MONTHLY_BALANCE.values())[-1]
 
+QUICK_ACTIONS = [
+    ("💸", "Virement"),
+    ("💳", "Paiement"),
+    ("📊", "Épargne"),
+    ("📄", "Relevé"),
+]
+
 
 class Dashboard(ctk.CTkFrame):
     def __init__(self, master):
@@ -21,7 +28,7 @@ class Dashboard(ctk.CTkFrame):
         self._build()
 
     def _build(self):
-        # ── Titre ──
+        # Titre
         ctk.CTkLabel(
             self,
             text="Dashboard",
@@ -29,9 +36,9 @@ class Dashboard(ctk.CTkFrame):
             anchor="w",
         ).pack(anchor="w", pady=(0, 16))
 
-        # ── Cartes résumé ──
+        # Cartes résumé
         cards_frame = ctk.CTkFrame(self, fg_color="transparent")
-        cards_frame.pack(fill="x", pady=(0, 16))
+        cards_frame.pack(fill="x", pady=(0, 12))
 
         cards = [
             ("Solde total",      f"${BALANCE:,.0f}",  "#7c3aed"),
@@ -48,14 +55,41 @@ class Dashboard(ctk.CTkFrame):
                          font=ctk.CTkFont(size=20, weight="bold"), text_color=color
                          ).pack(anchor="w", padx=14, pady=(0, 12))
 
-        # ── Graphique de solde ──
+        # Actions rapides
+        actions_frame = ctk.CTkFrame(self, fg_color="transparent")
+        actions_frame.pack(fill="x", pady=(0, 12))
+
+        for icon, label in QUICK_ACTIONS:
+            btn_frame = ctk.CTkFrame(actions_frame, fg_color="transparent")
+            btn_frame.pack(side="left", expand=True)
+
+            ctk.CTkButton(
+                btn_frame,
+                text=icon,
+                width=52,
+                height=52,
+                corner_radius=26,
+                font=ctk.CTkFont(size=22),
+                fg_color="#1e1e2e",
+                hover_color="#4c1d95",
+                command=lambda l=label: print(f"{l} clicked"),
+            ).pack()
+
+            ctk.CTkLabel(
+                btn_frame,
+                text=label,
+                font=ctk.CTkFont(size=11),
+                text_color="gray",
+            ).pack(pady=(6, 0))
+
+        # Graphique de solde
         chart_outer = ctk.CTkFrame(self, corner_radius=14, fg_color="#1e1e2e")
         chart_outer.pack(fill="x", pady=(8, 0))
 
         self.chart = BalanceChart(chart_outer, height=200)
         self.chart.pack(fill="x", padx=0, pady=(8, 0))
 
-        # ── Bande inférieure : solde du jour + variation ──
+        # Bande inférieure : solde du jour + variation
         info_bar = ctk.CTkFrame(chart_outer, fg_color="#161625", corner_radius=10)
         info_bar.pack(fill="x", padx=12, pady=(4, 12))
 
