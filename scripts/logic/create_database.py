@@ -92,29 +92,32 @@ TABLES["Notification"] = (
 
 
 def create_database(cursor):
+    """Create the database if it does not exist."""
     try:
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME} DEFAULT CHARACTER SET 'utf8mb4'")
+        cursor.execute(
+            f"CREATE DATABASE IF NOT EXISTS {DB_NAME} DEFAULT CHARACTER SET 'utf8mb4'"
+        )
     except mysql.connector.Error as err:
         print(f"Failed creating database: {err}")
-        exit(1)
+        raise
 
 
-def main():
+def initialize_database(host="localhost", user="root", password=""):
+    """
+    Create the database and all tables.
+    This function can be called from any external script.
+    """
     try:
-        connexion = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Misstouille83!sql"
+        connection = mysql.connector.connect(
+            host=host,
+            user=user,
+            password=password
         )
-        cursor = connexion.cursor()
+        cursor = connection.cursor()
 
-        # Create DB if needed
         create_database(cursor)
-
-        # Select DB
         cursor.execute(f"USE {DB_NAME}")
 
-        # Create tables
         for table_name, ddl in TABLES.items():
             try:
                 cursor.execute(ddl)
@@ -122,13 +125,10 @@ def main():
             except mysql.connector.Error as err:
                 print(f"Error creating table {table_name}: {err}")
 
-        connexion.commit()
+        connection.commit()
         cursor.close()
-        connexion.close()
+        connection.close()
 
     except mysql.connector.Error as err:
-        print(err)
-
-
-if __name__ == "__main__":
-    main()
+        print(f"MySQL error: {err}")
+        raise
