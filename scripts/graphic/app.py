@@ -55,7 +55,7 @@ class BudgetBuddyApp(ctk.CTk):
         self._clear_root()
         RegisterWindow(
             self.root_frame,
-            on_register=self._on_login_success,
+            on_register=self._show_login,   # ← redirection vers login
             on_back=self._show_landing,
         ).pack(fill="both", expand=True)
 

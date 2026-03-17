@@ -1,5 +1,5 @@
 import customtkinter as ctk
-
+from scripts.logic.login_register import handle_login
 
 class HomeWindow(ctk.CTkFrame):
     """Formulaire de connexion."""
@@ -94,9 +94,15 @@ class HomeWindow(ctk.CTkFrame):
         self.password_entry.configure(show="" if self._pwd_visible else "•")
         self.eye_btn.configure(text="👁" if self._pwd_visible else "🙈")
 
+    
     def _handle_login(self):
-        email    = self.email_entry.get()
+        email = self.email_entry.get()
         password = self.password_entry.get()
-        # TODO : ajouter la logique d'authentification
-        print(f"Login: {email}")
-        self._on_login()
+
+        success, message = handle_login(email, password)
+
+        if success:
+            print("[OK] Login successful")
+            self._on_login()
+        else:
+            print("[ERROR]", message)
