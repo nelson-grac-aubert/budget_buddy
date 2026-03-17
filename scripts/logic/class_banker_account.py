@@ -1,6 +1,6 @@
-from scripts.logic.class_account import Account
+from scripts.logic.user import user
 
-class BankerAccount (Account) : 
+class BankerAccount (user) : 
 
     def __init__() : 
         pass
