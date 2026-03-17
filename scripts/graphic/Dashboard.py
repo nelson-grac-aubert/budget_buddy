@@ -17,7 +17,7 @@ BALANCE  = list(MONTHLY_BALANCE.values())[-1]
 
 QUICK_ACTIONS = [
     ("💸", "Virement"),
-    ("💳", "Paiement"),
+    ("💳", "Retrait"),
     ("📊", "Épargne"),
     ("📄", "Relevé"),
 ]
@@ -63,7 +63,7 @@ class Dashboard(ctk.CTkFrame):
 
         action_commands = {
             "Virement": self._open_virement,
-            "Paiement": lambda: print("Paiement clicked"),
+            "Retrait": lambda: print("Retrait clicked"),
             "Épargne":  lambda: print("Épargne clicked"),
             "Relevé":   lambda: print("Relevé clicked"),
         }
