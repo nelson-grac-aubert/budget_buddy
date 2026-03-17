@@ -1,10 +1,10 @@
 import customtkinter as ctk
-from script.graphic.sidebar import Sidebar
-from script.graphic.Dashboard import Dashboard
-from script.graphic.account_management_window import AccountManagementWindow
-from script.graphic.register_window import RegisterWindow
-from script.graphic.home_window import HomeWindow
-from script.graphic.menu_home import HomeMenu
+from scripts.graphic.sidebar import Sidebar
+from scripts.graphic.Dashboard import Dashboard
+from scripts.graphic.account_management_window import AccountManagementWindow
+from scripts.graphic.register_window import RegisterWindow
+from scripts.graphic.home_window import HomeWindow
+from scripts.graphic.menu_home import HomeMenu
 
 
 class BudgetBuddyApp(ctk.CTk):

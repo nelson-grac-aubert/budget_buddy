@@ -1,6 +1,6 @@
 import customtkinter as ctk
-from script.graphic.balance_chart import BalanceChart
-from script.graphic.virement_window import VirementWindow
+from scripts.graphic.balance_chart import BalanceChart
+from scripts.graphic.virement_window import VirementWindow
 
 
 MONTHLY_BALANCE = {
