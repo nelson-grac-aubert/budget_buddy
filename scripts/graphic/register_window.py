@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from scripts.logic.login_register import handle_register   # ← liaison interne
 
 
 class RegisterWindow(ctk.CTkFrame):
@@ -13,8 +14,8 @@ class RegisterWindow(ctk.CTkFrame):
 
     def __init__(self, master, on_register, on_back):
         super().__init__(master, corner_radius=0, fg_color="transparent")
-        self._on_register = on_register
-        self._on_back     = on_back
+        self._on_register = on_register   # ← utilisé après succès
+        self._on_back = on_back
         self._build()
 
     def _build(self):
@@ -35,19 +36,19 @@ class RegisterWindow(ctk.CTkFrame):
             text_color="gray",
         ).pack(pady=(0, 14))
 
-        # Nom et prénom
-        ctk.CTkLabel(container, text="Nom ", anchor="w",
+        # Nom
+        ctk.CTkLabel(container, text="Nom", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=32)
-        self.fullname_entry = ctk.CTkEntry(
-            container, placeholder_text="Jean Dupont", height=38)
-        self.fullname_entry.pack(fill="x", padx=32, pady=(4, 10))
+        self.last_name_entry = ctk.CTkEntry(
+            container, placeholder_text="Dupont", height=38)
+        self.last_name_entry.pack(fill="x", padx=32, pady=(4, 10))
 
-        # Nom d'utilisateur
+        # Prénom
         ctk.CTkLabel(container, text="Prénom", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=32)
-        self.username_entry = ctk.CTkEntry(
+        self.first_name_entry = ctk.CTkEntry(
             container, placeholder_text="Jean", height=38)
-        self.username_entry.pack(fill="x", padx=32, pady=(4, 10))
+        self.first_name_entry.pack(fill="x", padx=32, pady=(4, 10))
 
         # Email
         ctk.CTkLabel(container, text="Email", anchor="w",
@@ -104,6 +105,7 @@ class RegisterWindow(ctk.CTkFrame):
             command=self._on_back,
         ).pack(pady=(8, 16))
 
+    # Vérification dynamique des règles du mot de passe
     def _check_rules(self):
         pwd = self.password_entry.get()
         results = {
@@ -121,11 +123,17 @@ class RegisterWindow(ctk.CTkFrame):
         self.submit_btn.configure(
             state="normal" if all(results.values()) else "disabled")
 
+    # Handler d'inscription
     def _handle_register(self):
-        fullname = self.fullname_entry.get()
-        username = self.username_entry.get()
-        email    = self.email_entry.get()
-        password = self.password_entry.get()
-        # TODO : ajouter la logique d'inscription
-        print(f"Register: {fullname} / {username} / {email}")
-        self._on_register()
+        first_name = self.first_name_entry.get()
+        last_name  = self.last_name_entry.get()
+        email      = self.email_entry.get()
+        password   = self.password_entry.get()
+
+        success, message = handle_register(first_name, last_name, email, password)
+
+        if success:
+            print("Inscription OK :", message)
+            self._on_register()  # ← redirection vers _on_login_success
+        else:
+            print("Erreur :", message)
