@@ -14,12 +14,12 @@ class AccountManagementWindow(ctk.CTkToplevel):
     def __init__(self, master=None):
         super().__init__(master)
         self.title("Account Management")
-        self.geometry("420x380")
+        self.geometry("420x300")
         self.resizable(False, False)
         self.grab_set()
         self._build_main()
 
-    # ── Vue principale ────────────────────────────────────────────────────────
+    # ── Vue principale 
 
     def _build_main(self):
         self._clear()
@@ -75,7 +75,9 @@ class AccountManagementWindow(ctk.CTkToplevel):
 
     def _build_change_password(self):
         self._clear()
-        self.geometry("420x460")
+        self.geometry("420x500")
+        self._pwd_visible     = False
+        self._confirm_visible = False
 
         ctk.CTkLabel(
             self,
@@ -83,12 +85,27 @@ class AccountManagementWindow(ctk.CTkToplevel):
             font=ctk.CTkFont(size=18, weight="bold"),
         ).pack(pady=(24, 16))
 
+        # Nouveau mot de passe + toggle
         ctk.CTkLabel(self, text="Nouveau mot de passe", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
+
+        pwd_row = ctk.CTkFrame(self, fg_color="transparent")
+        pwd_row.pack(fill="x", padx=30, pady=(4, 8))
+
         self.new_pwd_entry = ctk.CTkEntry(
-            self, placeholder_text="••••••••", show="•", height=38)
-        self.new_pwd_entry.pack(fill="x", padx=30, pady=(4, 8))
-        self.new_pwd_entry.bind("<KeyRelease>", lambda e: self._check_rules())
+            pwd_row, placeholder_text="••••••••", show="•", height=38)
+        self.new_pwd_entry.pack(side="left", fill="x", expand=True)
+        # Bind sur le widget interne pour garantir la détection de frappe
+        self.new_pwd_entry._entry.bind("<KeyRelease>", lambda e: self._check_rules())
+
+        self.eye_btn_new = ctk.CTkButton(
+            pwd_row, text="🙈", width=38, height=38,
+            corner_radius=8, fg_color="transparent",
+            hover_color=("gray85", "gray25"),
+            font=ctk.CTkFont(size=16),
+            command=self._toggle_new,
+        )
+        self.eye_btn_new.pack(side="left", padx=(4, 0))
 
         # Indicateurs de règles
         self._rule_labels = {}
@@ -106,12 +123,25 @@ class AccountManagementWindow(ctk.CTkToplevel):
             lbl.pack(anchor="w")
             self._rule_labels[key] = lbl
 
-        # Confirmation
+        # Confirmation + toggle
         ctk.CTkLabel(self, text="Confirmer le mot de passe", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
+
+        confirm_row = ctk.CTkFrame(self, fg_color="transparent")
+        confirm_row.pack(fill="x", padx=30, pady=(4, 16))
+
         self.confirm_pwd_entry = ctk.CTkEntry(
-            self, placeholder_text="••••••••", show="•", height=38)
-        self.confirm_pwd_entry.pack(fill="x", padx=30, pady=(4, 16))
+            confirm_row, placeholder_text="••••••••", show="•", height=38)
+        self.confirm_pwd_entry.pack(side="left", fill="x", expand=True)
+
+        self.eye_btn_confirm = ctk.CTkButton(
+            confirm_row, text="🙈", width=38, height=38,
+            corner_radius=8, fg_color="transparent",
+            hover_color=("gray85", "gray25"),
+            font=ctk.CTkFont(size=16),
+            command=self._toggle_confirm,
+        )
+        self.eye_btn_confirm.pack(side="left", padx=(4, 0))
 
         # Boutons
         btns = ctk.CTkFrame(self, fg_color="transparent")
@@ -141,7 +171,19 @@ class AccountManagementWindow(ctk.CTkToplevel):
         )
         self.save_btn.pack(side="left", expand=True)
 
-    # ── Validation
+    # ── Toggles visibilité 
+
+    def _toggle_new(self):
+        self._pwd_visible = not self._pwd_visible
+        self.new_pwd_entry.configure(show="" if self._pwd_visible else "•")
+        self.eye_btn_new.configure(text="👁" if self._pwd_visible else "🙈")
+
+    def _toggle_confirm(self):
+        self._confirm_visible = not self._confirm_visible
+        self.confirm_pwd_entry.configure(show="" if self._confirm_visible else "•")
+        self.eye_btn_confirm.configure(text="👁" if self._confirm_visible else "🙈")
+
+    # ── Validation 
 
     def _check_rules(self):
         pwd = self.new_pwd_entry.get()
@@ -176,7 +218,7 @@ class AccountManagementWindow(ctk.CTkToplevel):
         # TODO : implémenter la mise à jour de l'email
         print("Update Email clicked")
 
-    # ── Helper 
+   
 
     def _clear(self):
         for widget in self.winfo_children():
