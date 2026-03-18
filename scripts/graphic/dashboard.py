@@ -5,18 +5,6 @@ from scripts.graphic.retrait_window import RetraitWindow
 from scripts.graphic.depot_window import DepotWindow
 
 
-# TODO : remplacer par des données réelles issues de la base de données
-_MONTHLY_BALANCE = {
-    "Jan": 45000,
-    "Fév": 47500,
-    "Mar": 51200,
-    "Avr": 49800,
-    "Mai": 62970,
-}
-_INCOME   = 5_200
-_EXPENSES = 3_180
-
-
 # ── Toast de notification ─────────────────────────────────────────────────── #
 
 class _Toast(ctk.CTkToplevel):
@@ -40,7 +28,6 @@ class _Toast(ctk.CTkToplevel):
                              border_width=1, border_color=accent)
         frame.pack(padx=0, pady=0)
 
-        # Barre colorée à gauche
         ctk.CTkFrame(frame, width=4, fg_color=accent,
                      corner_radius=0).pack(side="left", fill="y", padx=(0, 12))
 
@@ -55,7 +42,7 @@ class _Toast(ctk.CTkToplevel):
                      text_color="#d1d5db", anchor="w",
                      wraplength=260).pack(anchor="w", pady=(2, 0))
 
-        ctk.CTkButton(frame, text="✕", width=24, height=24,
+        ctk.CTkButton(frame, text="X", width=24, height=24,
                       fg_color="transparent", text_color="#9ca3af",
                       hover_color=bg, font=ctk.CTkFont(size=12),
                       command=self._close
@@ -84,41 +71,67 @@ class _Toast(ctk.CTkToplevel):
 
 class Dashboard(ctk.CTkFrame):
     def __init__(self, current_user_id, master, balance,
-                 monthly_balance: dict = _MONTHLY_BALANCE,
-                 income: float         = _INCOME,
-                 expenses: float       = _EXPENSES,
+                 monthly_balance: dict = None,
+                 income: float         = 0.0,
+                 expenses: float       = 0.0,
                  on_releve=None,
                  on_notify=None):
+        """Build the main dashboard view for a logged-in user.
+
+        Args:
+            current_user_id: ID of the logged-in user (used by child windows).
+            master:          Parent tkinter widget.
+            balance:         Current account balance fetched from the database.
+            monthly_balance: Dict {month_abbr: total} for the line chart.
+                             Can be empty ({}) when the user has no operations yet.
+                             The chart and trend label handle this case gracefully.
+            income:          Sum of credits this month (default 0.0).
+            expenses:        Sum of debits this month, as a positive value (default 0.0).
+            on_releve:       Callback to navigate to the statement view.
+            on_notify:       Callback to push a notification to the sidebar.
+        """
         super().__init__(master, corner_radius=0, fg_color="transparent")
-        self._balance = balance
-        self._monthly_balance = monthly_balance
+
+        # Store monthly_balance as-is; emptiness is handled per-widget below
+        self._monthly_balance = monthly_balance or {}
+
+        self._balance         = balance
         self._income          = income
         self._expenses        = expenses
         self._virement_window = None
         self._retrait_window  = None
-        self._depot_window  = None
+        self._depot_window    = None
         self._on_releve       = on_releve
         self._on_notify       = on_notify
-        self.current_user_id = current_user_id
+        self.current_user_id  = current_user_id
         self._build()
 
+    # ── Main layout ───────────────────────────────────────────────────────── #
+
     def _build(self):
+        """Assemble all sections of the dashboard."""
         scroll = ctk.CTkScrollableFrame(self, corner_radius=0, fg_color="transparent")
         scroll.pack(fill="both", expand=True)
 
-        # ── Titre ──
         ctk.CTkLabel(scroll, text="Dashboard",
                      font=ctk.CTkFont(size=26, weight="bold"),
                      anchor="w").pack(anchor="w", pady=(0, 16))
 
-        # ── Cartes résumé ──
-        cards_frame = ctk.CTkFrame(scroll, fg_color="transparent")
+        self._build_summary_cards(scroll)
+        self._build_action_buttons(scroll)
+        self._build_chart_section(scroll)
+
+    # ── Summary cards (balance, income, expenses) ─────────────────────────── #
+
+    def _build_summary_cards(self, parent):
+        """Render the three KPI cards at the top of the dashboard."""
+        cards_frame = ctk.CTkFrame(parent, fg_color="transparent")
         cards_frame.pack(fill="x", pady=(0, 12))
 
         for title, value, color in [
             ("Solde total",      f"${self._balance:,.0f}",  "#7c3aed"),
             ("Revenus du mois",  f"${self._income:,.0f}",   "#2d7a3a"),
-            ("Dépenses du mois", f"${self._expenses:,.0f}", "#9b3a3a"),
+            ("Depenses du mois", f"${self._expenses:,.0f}", "#9b3a3a"),
         ]:
             card = ctk.CTkFrame(cards_frame, corner_radius=10)
             card.pack(side="left", expand=True, fill="both", padx=6)
@@ -129,8 +142,11 @@ class Dashboard(ctk.CTkFrame):
                          font=ctk.CTkFont(size=20, weight="bold"), text_color=color
                          ).pack(anchor="w", padx=14, pady=(0, 12))
 
-        # ── Actions rapides ──
-        actions_frame = ctk.CTkFrame(scroll, fg_color="transparent")
+    # ── Quick-action buttons ───────────────────────────────────────────────── #
+
+    def _build_action_buttons(self, parent):
+        """Render the row of circular action buttons (virement, retrait, etc.)."""
+        actions_frame = ctk.CTkFrame(parent, fg_color="transparent")
         actions_frame.pack(fill="x", pady=(0, 12))
 
         for icon, label, cmd in [
@@ -138,52 +154,39 @@ class Dashboard(ctk.CTkFrame):
             ("💳", "Retrait",  self._open_retrait),
             ("💶", "Dépôt", self._open_depot),
             ("📊", "Épargne",  lambda: print("Épargne clicked")),
-            ("📄", "Relevé",   lambda: self._on_releve() if self._on_releve else None),
+            ("📄", "Relevé",   lambda: self._on_releve() if self._on_releve else None)
         ]:
             bf = ctk.CTkFrame(actions_frame, fg_color="transparent")
             bf.pack(side="left", expand=True)
             ctk.CTkButton(bf, text=icon, width=52, height=52, corner_radius=26,
-                          font=ctk.CTkFont(size=22),
+                          font=ctk.CTkFont(size=23),
                           fg_color="#1e1e2e", hover_color="#4c1d95",
                           command=cmd).pack()
             ctk.CTkLabel(bf, text=label,
-                         font=ctk.CTkFont(size=11),
+                         font=ctk.CTkFont(size=15),
                          text_color="gray").pack(pady=(6, 0))
 
-        # ── Graphique ──
-        chart_outer = ctk.CTkFrame(scroll, corner_radius=14, fg_color="#1e1e2e")
+    # ── Balance chart ─────────────────────────────────────────────────────── #
+
+    def _build_chart_section(self, parent):
+        """Render the balance-over-time line chart.
+
+        If the user has no operations yet, a placeholder message is shown
+        instead of the chart (BalanceChart requires at least 2 data points).
+        """
+        chart_outer = ctk.CTkFrame(parent, corner_radius=14, fg_color="#1e1e2e")
         chart_outer.pack(fill="x", pady=(8, 0))
 
-        BalanceChart(chart_outer,
-                     months=list(self._monthly_balance.keys()),
-                     values=list(self._monthly_balance.values()),
-                     height=200).pack(fill="x", padx=0, pady=(8, 0))
-
-        info_bar = ctk.CTkFrame(chart_outer, fg_color="#161625", corner_radius=10)
-        info_bar.pack(fill="x", padx=12, pady=(4, 12))
-
-        left = ctk.CTkFrame(info_bar, fg_color="transparent")
-        left.pack(side="left", padx=14, pady=10)
-        ctk.CTkLabel(left, text="Aujourd'hui",
-                     font=ctk.CTkFont(size=11), text_color="gray").pack(anchor="w")
-        ctk.CTkLabel(left, text=f"${self._balance:,.0f}",
-                     font=ctk.CTkFont(size=22, weight="bold")).pack(anchor="w")
-
-        right = ctk.CTkFrame(info_bar, fg_color="transparent")
-        right.pack(side="right", padx=14)
-
-        prev   = list(self._monthly_balance.values())[-2]
-        change = (self._balance - prev) / prev * 100
-        color  = "#22c55e" if change >= 0 else "#ef4444"
-        ctk.CTkLabel(right,
-                     text=f"{'▲' if change >= 0 else '▼'} {abs(change):.1f}%",
-                     font=ctk.CTkFont(size=14, weight="bold"),
-                     text_color=color).pack(side="left", padx=(0, 10))
-
-        ctk.CTkButton(right, text="+", width=32, height=32, corner_radius=16,
-                      font=ctk.CTkFont(size=18, weight="bold"),
-                      fg_color="#7c3aed", hover_color="#6d28d9",
-                      command=lambda: None).pack(side="left")
+        if len(self._monthly_balance) >= 2:
+            BalanceChart(chart_outer,
+                         months=list(self._monthly_balance.keys()),
+                         values=list(self._monthly_balance.values()),
+                         height=280).pack(fill="x", padx=0, pady=12)
+        else:
+            ctk.CTkLabel(chart_outer,
+                         text="Aucune operation enregistree pour le moment.",
+                         font=ctk.CTkFont(size=13),
+                         text_color="gray").pack(pady=40)
 
     # ── Notifications ─────────────────────────────────────────────────────── #
 
@@ -192,7 +195,7 @@ class Dashboard(ctk.CTkFrame):
         if self._on_notify:
             self._on_notify(title, message, kind)
 
-    # ── Fenêtres secondaires ──────────────────────────────────────────────── #
+    # ── Secondary windows ─────────────────────────────────────────────────── #
 
     def _open_virement(self):
         if self._virement_window is None or not self._virement_window.winfo_exists():
@@ -211,7 +214,7 @@ class Dashboard(ctk.CTkFrame):
                 on_success=lambda t, m: self._notify(t, m, kind="warning"),
             )
             self._retrait_window.focus()
-    
+
     def _open_depot(self):
         if self._depot_window is None or not self._depot_window.winfo_exists():
             self._depot_window = DepotWindow(self.current_user_id,

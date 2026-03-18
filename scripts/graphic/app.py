@@ -11,7 +11,8 @@ from scripts.graphic.transaction_window import TransactionWindow
 from scripts.graphic.releve_view import ReleveView
 from scripts.graphic.notification_view import NotificationView
 
-from scripts.logic.dashboard_data import get_account_balance
+# Import the single aggregator instead of calling each query function separately
+from scripts.logic.dashboard_data import get_dashboard_data
 from scripts.logic.dashboard_data import get_transactions_from_db
 
 
@@ -93,12 +94,19 @@ class BudgetBuddyApp(ctk.CTk):
     # ── Vues principales ──
 
     def _show_dashboard(self):
+        """Load real data from the database then render the Dashboard widget."""
         self._clear_main()
-        balance = get_account_balance(self.current_user_id)
 
-        Dashboard(self.current_user_id,
+        # Fetch all dashboard data in one call (balance, income, expenses, chart)
+        data = get_dashboard_data(self.current_user_id)
+
+        Dashboard(
+            self.current_user_id,
             self.main_frame,
-            balance=balance,
+            balance=data["balance"],
+            monthly_balance=data["monthly_balance"],
+            income=data["income"],
+            expenses=data["expenses"],
             on_releve=self._show_releve,
             on_notify=self._on_new_notification,
         ).pack(fill="both", expand=True)

@@ -53,27 +53,86 @@ def get_month_summary(user_id: int):
     return income, expenses
 
 
-def get_monthly_balance(user_id: int):
-    """Return a dict { 'Jan': 1234, 'Fév': 2345, ... } based on real operations."""
+def get_balance_over_time(user_id: int) -> dict:
+    """Return the cumulative balance after every operation, oldest to newest.
+
+    One data point per operation — the x-axis label is the operation date
+    (DD/MM), and the value is the running balance at that point in time.
+
+    Example with 4 operations:
+        Op 1  +1200  on 01/10  → balance: 1200   label: '01/10'
+        Op 2   -400  on 05/10  → balance:  800   label: '05/10'
+        Op 3   -850  on 18/10  → balance:  -50   label: '18/10'
+        Op 4  +1500  on 02/11  → balance: 1450   label: '02/11'
+
+    If two operations share the same date, the later one in insertion order
+    wins — the label shows the final balance for that day.
+
+    Returns:
+        A dict { 'DD/MM': cumulative_balance } ordered oldest → newest.
+        Returns an empty dict if the account has no operations.
+    """
     connection = get_connection()
     cursor = connection.cursor(dictionary=True)
 
     cursor.execute("""
-        SELECT 
-            DATE_FORMAT(o.date, '%b') AS month,
-            SUM(o.amount) AS total
+        SELECT o.amount, o.date
         FROM Operation o
         JOIN Account a ON o.account_id = a.id
         WHERE a.user_id = %s
-        GROUP BY YEAR(o.date), MONTH(o.date)
-        ORDER BY YEAR(o.date), MONTH(o.date)
+        ORDER BY o.date ASC
     """, (user_id,))
 
     rows = cursor.fetchall()
     cursor.close()
     connection.close()
 
-    return {row["month"]: row["total"] for row in rows}
+    # Accumulate balance point by point
+    cumulative = 0.0
+    result     = {}
+    for row in rows:
+        cumulative      += float(row["amount"])
+        label            = row["date"].strftime("%d/%m/%y")
+        result[label]    = round(cumulative, 2)
+
+    return result
+
+# ---------------------------------------------------------------------------
+# Aggregator — single entry point for the Dashboard widget
+# ---------------------------------------------------------------------------
+
+def get_dashboard_data(user_id: int) -> dict:
+    """Fetch all data needed by the Dashboard in a single call.
+
+    Calls the existing query functions and bundles their results into one
+    dictionary so that app.py only needs one import and one call.
+
+    Args:
+        user_id: The ID of the currently logged-in user (from User table).
+
+    Returns:
+        A dict with keys:
+            - "balance"         (float) : current account balance
+            - "income"          (float) : total credits this month
+            - "expenses"        (float) : total debits this month (positive)
+            - "monthly_balance" (dict)  : { 'DD/MM': cumulative_balance, ... }
+    """
+    # Current account balance (already stored in Account.balance)
+    balance = get_account_balance(user_id)
+
+    # Income and expenses computed from this month's operations
+    income, expenses = get_month_summary(user_id)
+
+    # Balance curve: one point per operation, oldest to newest
+    monthly_balance = get_balance_over_time(user_id)
+
+    return {
+        "balance":         balance,
+        "income":          income,
+        "expenses":        expenses,
+        "monthly_balance": monthly_balance,
+    }
+
 
 def get_transactions_from_db(user_id: int):
     """Return all operations for the user's account in the format expected by the UI."""
