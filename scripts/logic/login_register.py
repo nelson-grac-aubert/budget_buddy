@@ -10,14 +10,18 @@ def validate_password(password):
     pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{10,}$'
     return re.match(pattern, password)
 
+PEPPER = "my_super_secret_pepper"
+
 def hash_password(password):
-    """Return a bcrypt hashed password."""
+    """Return a bcrypt hashed password with pepper."""
+    salted = (password + PEPPER).encode()
     salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode(), salt).decode()
+    return bcrypt.hashpw(salted, salt).decode()
 
 def check_password(password, hashed):
-    """Compare a plain password with a hashed one."""
-    return bcrypt.checkpw(password.encode(), hashed.encode())
+    """Compare a plain password with a hashed one using pepper."""
+    salted = (password + PEPPER).encode()
+    return bcrypt.checkpw(salted, hashed.encode())
 
 def validate_email(email):
     """Basic email format validation."""
