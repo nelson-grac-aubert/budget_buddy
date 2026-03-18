@@ -6,9 +6,7 @@ class PieChart(tk.Canvas):
     """Camembert des dépenses par motif."""
 
     def __init__(self, master, data: list, **kwargs):
-        """
-        data : liste de (label, valeur, couleur_hex)
-        """
+        """data : liste de (label, valeur, couleur_hex)"""
         super().__init__(master, bg="#1e1e2e", highlightthickness=0, **kwargs)
         self._data = data
         self.bind("<Configure>", lambda e: self._draw())
@@ -28,7 +26,7 @@ class PieChart(tk.Canvas):
         r      = min(cx, cy) - 20
         start  = -90.0
 
-        for label, value, color in self._data:
+        for _, value, color in self._data:
             extent = (value / total) * 360
             self.create_arc(
                 cx - r, cy - r, cx + r, cy + r,

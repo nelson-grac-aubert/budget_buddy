@@ -61,7 +61,7 @@ class Sidebar(ctk.CTkFrame):
                     text_color="white",
                     font=ctk.CTkFont(size=10, weight="bold"),
                 )
-                # Ne pas le packer — sera affiché par add_notification()
+                
  
             else:
                 ctk.CTkButton(
