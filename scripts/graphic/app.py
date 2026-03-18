@@ -9,6 +9,7 @@ from scripts.graphic.transaction_window import TransactionWindow
 from scripts.graphic.releve_view import ReleveView
 from scripts.graphic.transaction_utils import get_transactions
 from scripts.graphic.notification_view import NotificationView
+from scripts.logic.dashboard_data import get_account_balance
 from datetime import datetime
  
  
@@ -85,14 +86,17 @@ class BudgetBuddyApp(ctk.CTk):
         self._show_dashboard()
  
     # ── Vues principales ──
- 
+
     def _show_dashboard(self):
         self._clear_main()
+        balance = get_account_balance(user_id=1)  # temporaire, avant login dynamique
         Dashboard(
             self.main_frame,
+            balance=balance,
             on_releve=self._show_releve,
             on_notify=self._on_new_notification,
         ).pack(fill="both", expand=True)
+
  
     def _show_transactions(self):
         self._clear_main()

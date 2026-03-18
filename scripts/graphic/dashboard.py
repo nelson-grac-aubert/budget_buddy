@@ -82,17 +82,17 @@ class _Toast(ctk.CTkToplevel):
 # ── Dashboard ─────────────────────────────────────────────────────────────── #
 
 class Dashboard(ctk.CTkFrame):
-    def __init__(self, master,
+    def __init__(self, master, balance,
                  monthly_balance: dict = _MONTHLY_BALANCE,
                  income: float         = _INCOME,
                  expenses: float       = _EXPENSES,
                  on_releve=None,
                  on_notify=None):
         super().__init__(master, corner_radius=0, fg_color="transparent")
+        self._balance = balance
         self._monthly_balance = monthly_balance
         self._income          = income
         self._expenses        = expenses
-        self._balance         = list(monthly_balance.values())[-1]
         self._virement_window = None
         self._retrait_window  = None
         self._on_releve       = on_releve
