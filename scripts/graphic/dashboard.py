@@ -83,7 +83,7 @@ class _Toast(ctk.CTkToplevel):
 # ── Dashboard ─────────────────────────────────────────────────────────────── #
 
 class Dashboard(ctk.CTkFrame):
-    def __init__(self, master, balance,
+    def __init__(self, current_user_id, master, balance,
                  monthly_balance: dict = _MONTHLY_BALANCE,
                  income: float         = _INCOME,
                  expenses: float       = _EXPENSES,
@@ -99,6 +99,7 @@ class Dashboard(ctk.CTkFrame):
         self._depot_window  = None
         self._on_releve       = on_releve
         self._on_notify       = on_notify
+        self.current_user_id = current_user_id
         self._build()
 
     def _build(self):
@@ -205,7 +206,7 @@ class Dashboard(ctk.CTkFrame):
 
     def _open_retrait(self):
         if self._retrait_window is None or not self._retrait_window.winfo_exists():
-            self._retrait_window = RetraitWindow(
+            self._retrait_window = RetraitWindow(self.current_user_id,
                 master=self,
                 on_success=lambda t, m: self._notify(t, m, kind="warning"),
             )
@@ -213,7 +214,7 @@ class Dashboard(ctk.CTkFrame):
     
     def _open_depot(self):
         if self._depot_window is None or not self._depot_window.winfo_exists():
-            self._depot_window = DepotWindow(
+            self._depot_window = DepotWindow(self.current_user_id,
                 master=self,
                 on_success=lambda t, m: self._notify(t, m, kind="warning"),
             )

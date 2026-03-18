@@ -5,13 +5,14 @@ from scripts.logic.class_withdrawal import Withdrawal
 class RetraitWindow(ctk.CTkToplevel):
     """Fenêtre modale pour effectuer un retrait."""
 
-    def __init__(self, master=None, on_success=None):
+    def __init__(self, current_user_id, master=None, on_success=None):
         super().__init__(master)
         self.title("Retrait")
         self.geometry("420x380")
         self.resizable(False, False)
         self.grab_set()
         self._on_success = on_success
+        self.current_user_id = current_user_id
         self._build()
 
     def _build(self):
@@ -91,7 +92,7 @@ class RetraitWindow(ctk.CTkToplevel):
 
         # Renseigner les éléments du retrait 
 
-        account_id = 1
+        account_id = self.current_user_id
 
         retrait = Withdrawal(
         description=description,

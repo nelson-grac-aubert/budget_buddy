@@ -5,7 +5,7 @@ from scripts.logic.class_withdrawal import Withdrawal
 class DepotWindow(ctk.CTkToplevel):
     """Fenêtre modale pour effectuer un depot."""
 
-    def __init__(self, master=None, on_success=None):
+    def __init__(self, current_user_id, master=None, on_success=None):
         super().__init__(master)
         self.title("Depot")
         self.geometry("420x380")
@@ -13,6 +13,7 @@ class DepotWindow(ctk.CTkToplevel):
         self.grab_set()
         self._on_success = on_success
         self._build()
+        self.current_user_id = current_user_id
 
     def _build(self):
         ctk.CTkLabel(
@@ -91,7 +92,7 @@ class DepotWindow(ctk.CTkToplevel):
 
         # Renseigner les éléments du depot 
 
-        account_id = 1
+        account_id = self.current_user_id
 
         depot = Withdrawal(
         description=description,

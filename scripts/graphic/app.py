@@ -96,7 +96,7 @@ class BudgetBuddyApp(ctk.CTk):
         self._clear_main()
         balance = get_account_balance(self.current_user_id)
 
-        Dashboard(
+        Dashboard(self.current_user_id,
             self.main_frame,
             balance=balance,
             on_releve=self._show_releve,
