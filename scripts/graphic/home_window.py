@@ -99,10 +99,16 @@ class HomeWindow(ctk.CTkFrame):
         email = self.email_entry.get()
         password = self.password_entry.get()
 
-        success, message = handle_login(email, password)
+        result = handle_login(email, password)
 
-        if success:
-            print("[OK] Login successful")
-            self._on_login()
-        else:
+        # Cas d'échec → handle_login renvoie seulement 2 valeurs
+        if result[0] is False:
+            success, message = result
             print("[ERROR]", message)
+            return
+
+        # Cas de succès → handle_login renvoie 3 valeurs
+        success, message, user_id = result
+
+        print("[OK] Login successful")
+        self._on_login(user_id)

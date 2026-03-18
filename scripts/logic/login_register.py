@@ -120,4 +120,4 @@ def handle_login(email, password):
     if not check_password(password, user["password_hash"]):
         return False, "Incorrect password"
 
-    return True, "Login successful"
+    return True, "Login Successful", user["id"]

@@ -26,7 +26,6 @@ class BudgetBuddyApp(ctk.CTk):
         self._notifications = []   # historique des notifications
 
         # TEMPORAIRE : en attendant login dynamique
-        self.current_user_id = 1
 
         self.root_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.root_frame.pack(fill="both", expand=True)
@@ -70,7 +69,8 @@ class BudgetBuddyApp(ctk.CTk):
 
     # ── Après connexion réussie ──
 
-    def _on_login_success(self):
+    def _on_login_success(self, user_id):
+        self.current_user_id = user_id
         self._clear_root()
 
         self.sidebar = Sidebar(
