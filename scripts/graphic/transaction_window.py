@@ -2,6 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 from scripts.graphic.pie_chart import PieChart
 from scripts.graphic.transaction_utils import (pie_color, parse_date, col)
+from scripts.logic.dashboard_data import get_transactions_from_db
 
 
 class TransactionWindow(ctk.CTkFrame):
@@ -9,7 +10,7 @@ class TransactionWindow(ctk.CTkFrame):
 
     def __init__(self, master, user_id: int = 1):
         super().__init__(master, corner_radius=0, fg_color="transparent")
-        self._all_transactions = get_transactions(user_id)
+        self._all_transactions = get_transactions_from_db(user_id)
         self._show_transactions()
 
     def _clear(self):
