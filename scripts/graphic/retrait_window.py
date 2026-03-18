@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from scripts.logic.class_withdrawal import Withdrawal
 
 
 class RetraitWindow(ctk.CTkToplevel):
@@ -30,17 +31,17 @@ class RetraitWindow(ctk.CTkToplevel):
         ctk.CTkFrame(self, height=1, fg_color="#3a3a3a").pack(
             fill="x", padx=30, pady=(0, 20))
 
-        ctk.CTkLabel(self, text="Bénéficiaire", anchor="w",
+        ctk.CTkLabel(self, text="Description", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
-        self.beneficiaire_entry = ctk.CTkEntry(
-            self, placeholder_text="Nom ou IBAN", height=38)
-        self.beneficiaire_entry.pack(fill="x", padx=30, pady=(4, 14))
+        self.description_entry = ctk.CTkEntry(
+            self, placeholder_text="Courses au marché", height=38)
+        self.description_entry.pack(fill="x", padx=30, pady=(4, 14))
 
-        ctk.CTkLabel(self, text="Somme (€)", anchor="w",
+        ctk.CTkLabel(self, text="Montant (€)", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
-        self.somme_entry = ctk.CTkEntry(
+        self.montant_entry = ctk.CTkEntry(
             self, placeholder_text="0,00", height=38)
-        self.somme_entry.pack(fill="x", padx=30, pady=(4, 6))
+        self.montant_entry.pack(fill="x", padx=30, pady=(4, 6))
 
         self.error_label = ctk.CTkLabel(
             self, text="",
@@ -70,32 +71,45 @@ class RetraitWindow(ctk.CTkToplevel):
         ).pack(side="left", expand=True)
 
     def _handle_retrait(self):
-        beneficiaire = self.beneficiaire_entry.get().strip()
-        somme_str    = self.somme_entry.get().strip().replace(",", ".")
+        description = self.description_entry.get().strip()
+        montant_str    = self.montant_entry.get().strip().replace(",", ".")
 
-        if not beneficiaire:
-            self._show_error("Le bénéficiaire est requis.")
+        if not description:
+            self._show_error("Le description est requis.")
             return
-        if not somme_str:
-            self._show_error("La somme est requise.")
+        if not montant_str:
+            self._show_error("La montant est requise.")
             return
         try:
-            somme = float(somme_str)
+            montant = float(montant_str)
         except ValueError:
-            self._show_error("La somme doit être un nombre valide.")
+            self._show_error("La montant doit être un nombre valide.")
             return
-        if somme <= 0:
-            self._show_error("La somme doit être supérieure à 0 €.")
+        if montant <= 0:
+            self._show_error("La montant doit être supérieur à 0 €.")
             return
 
-        # TODO : vérifier solde et enregistrer en DB
+        # Renseigner les éléments du retrait 
+
+        account_id = 1
+
+        retrait = Withdrawal(
+        description=description,
+        montant=-montant,          # retrait = montant négatif
+        categorie_id=None,       # on verra plus tard pour les catégories
+        account_id=account_id,
+        destination_account_id=None,
+    )
+
+        retrait.save(2)  # 2 = withdrawal
+
         self._show_error("")
-        print(f"Retrait → {beneficiaire} | {somme:.2f} €")
+        print(f"Retrait → {description} | {montant:.2f} €")
         self.destroy()
         if self._on_success:
             self._on_success(
                 "💵 Retrait effectué",
-                f"{somme:.2f} € retiré pour {beneficiaire}",
+                f"{montant:.2f} € retiré pour {description}",
             )
 
     def _show_error(self, message: str):
