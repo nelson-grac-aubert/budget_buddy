@@ -38,27 +38,38 @@ def get_connection():
     )
 
 def insert_user(first_name, last_name, email, password_hash, user_type="client"):
-    """Insert a new user into the database."""
+    """Insert a new user and automatically create an account."""
     try:
         connection = get_connection()
         cursor = connection.cursor()
 
+        # Insert user
         query = """
             INSERT INTO User (first_name, last_name, email, password_hash, type)
             VALUES (%s, %s, %s, %s, %s)
         """
-
         cursor.execute(query, (first_name, last_name, email, password_hash, user_type))
-        connection.commit()
 
+        # Retrieve new user ID
+        user_id = cursor.lastrowid
+
+        # Create associated account
+        cursor.execute(
+            "INSERT INTO Account (user_id, balance) VALUES (%s, %s)",
+            (user_id, 0)
+        )
+
+        connection.commit()
         cursor.close()
         connection.close()
+
         return True, "User registered successfully"
 
     except Error as err:
         if "Duplicate entry" in str(err):
             return False, "Email already exists"
         return False, f"MySQL error: {err}"
+
 
 def get_user_by_email(email):
     """Retrieve a user by email."""
