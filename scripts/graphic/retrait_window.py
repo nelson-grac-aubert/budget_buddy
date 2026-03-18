@@ -101,7 +101,7 @@ class RetraitWindow(ctk.CTkToplevel):
         destination_account_id=None,
     )
 
-        retrait.save(2)  # 2 = withdrawal
+        retrait.execute()
 
         self._show_error("")
         print(f"Retrait → {description} | {montant:.2f} €")

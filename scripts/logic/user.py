@@ -67,14 +67,4 @@ class User:
         conn.close()
         return result["balance"] if result else 0
 
-    def update_balance(self, amount):
-        conn = main()
-        cursor = conn.cursor()
-
-        cursor.execute(
-            "UPDATE accounts SET balance = balance + %s WHERE id=%s",
-            (amount, self.account_id)
-        )
-
-        conn.commit()
-        conn.close()
+    

@@ -38,6 +38,19 @@ class BankOperation:
         finally:
             conn.close()
 
+    def update_balance(self, amount):
+        """ Update la somme sur le compte en banque """
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "UPDATE account SET balance = balance + %s WHERE id=%s",
+            (amount, self.account_id)
+        )
+
+        conn.commit()
+        conn.close()
+
     def execute(self):
         """Méthode à redéfinir dans les classes enfants."""
         raise NotImplementedError("Cette méthode doit être implémentée.")
