@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from scripts.logic.class_withdrawal import Withdrawal
+from scripts.logic.class_deposit import Deposit
 
 
 class DepotWindow(ctk.CTkToplevel):
@@ -94,7 +94,7 @@ class DepotWindow(ctk.CTkToplevel):
 
         account_id = self.current_user_id
 
-        depot = Withdrawal(
+        depot = Deposit(
         description=description,
         montant=montant,          # depot = montant négatif
         categorie_id=1,       # on verra plus tard pour les catégories
