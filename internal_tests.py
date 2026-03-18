@@ -99,7 +99,7 @@ if __name__ == "__main__":
     PASSWORD = "strong_password_budget_buddies"
 
     # 1. Créer toute la DB (structure + seed)
-    # initialize_all(host=HOST, user=USER, password=PASSWORD)
+    initialize_all(host=HOST, user=USER, password=PASSWORD)
 
     # 2. Créer John Doe
     # create_john_doe(host=HOST, user=USER, password=PASSWORD)

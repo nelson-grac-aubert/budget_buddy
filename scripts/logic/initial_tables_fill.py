@@ -5,6 +5,7 @@ OPERATION_TYPES = [
 ]
 
 OPERATION_CATEGORIES = [
+    "ATM",
     "rent",
     "bills",
     "food",

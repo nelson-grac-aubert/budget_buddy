@@ -96,7 +96,7 @@ class RetraitWindow(ctk.CTkToplevel):
         retrait = Withdrawal(
         description=description,
         montant=-montant,          # retrait = montant négatif
-        categorie_id=None,       # on verra plus tard pour les catégories
+        categorie_id=1,       # on verra plus tard pour les catégories
         account_id=account_id,
         destination_account_id=None,
     )
