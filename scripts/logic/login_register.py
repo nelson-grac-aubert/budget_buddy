@@ -66,7 +66,6 @@ def insert_user(first_name, last_name, email, password_hash, user_type="client")
             return False, "Email already exists"
         return False, f"MySQL error: {err}"
 
-
 def get_user_by_email(email):
     """Retrieve a user by email."""
     try:
