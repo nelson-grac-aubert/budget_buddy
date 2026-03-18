@@ -74,3 +74,42 @@ def get_monthly_balance(user_id: int):
     connection.close()
 
     return {row["month"]: row["total"] for row in rows}
+
+def get_transactions_from_db(user_id: int):
+    """Return all operations for the user's account in the format expected by the UI."""
+    connection = get_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+        SELECT 
+            o.date,
+            o.amount,
+            o.description,
+            oc.label AS category,
+            ot.label AS type
+        FROM Operation o
+        JOIN Account a ON o.account_id = a.id
+        JOIN OperationCategory oc ON o.category_id = oc.id
+        JOIN OperationType ot ON o.type_id = ot.id
+        WHERE a.user_id = %s
+        ORDER BY o.date DESC
+    """
+
+    cursor.execute(query, (user_id,))
+    rows = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    # Adapt to the format expected by Cecilia's "relevé" window
+    formatted = []
+    for r in rows:
+        formatted.append({
+            "date": r["date"].strftime("%d/%m/%Y"),
+            "description": r["description"],
+            "categorie": r["category"],
+            "type": "Crédit" if r["amount"] >= 0 else "Débit",
+            "montant": float(r["amount"]),
+        })
+
+    return formatted
