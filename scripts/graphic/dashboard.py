@@ -196,7 +196,7 @@ class Dashboard(ctk.CTkFrame):
 
     def _open_virement(self):
         if self._virement_window is None or not self._virement_window.winfo_exists():
-            self._virement_window = VirementWindow(
+            self._virement_window = VirementWindow(self.current_user_id,
                 master=self,
                 on_success=lambda t, m: self._notify(t, m, kind="success"),
             )

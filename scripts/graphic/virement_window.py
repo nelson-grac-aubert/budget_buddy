@@ -1,16 +1,19 @@
 import customtkinter as ctk
+from scripts.logic.class_withdrawal import Withdrawal
+from scripts.logic.class_deposit import Deposit
 
 
 class VirementWindow(ctk.CTkToplevel):
     """Fenêtre modale pour effectuer un virement."""
 
-    def __init__(self, master=None, on_success=None):
+    def __init__(self, current_user_id, master=None, on_success=None):
         super().__init__(master)
         self.title("Nouveau virement")
         self.geometry("420x420")
         self.resizable(False, False)
         self.grab_set()
         self._on_success = on_success
+        self.current_user_id = current_user_id
         self._build()
 
     def _build(self):
@@ -30,10 +33,10 @@ class VirementWindow(ctk.CTkToplevel):
         ctk.CTkFrame(self, height=1, fg_color="#3a3a3a").pack(
             fill="x", padx=30, pady=(0, 20))
 
-        ctk.CTkLabel(self, text="Bénéficiaire", anchor="w",
+        ctk.CTkLabel(self, text="ID du compte du bénéficiaire", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.beneficiaire_entry = ctk.CTkEntry(
-            self, placeholder_text="Nom ou IBAN", height=38)
+            self, placeholder_text="3", height=38)
         self.beneficiaire_entry.pack(fill="x", padx=30, pady=(4, 14))
 
         ctk.CTkLabel(self, text="Montant (€)", anchor="w",
@@ -69,10 +72,46 @@ class VirementWindow(ctk.CTkToplevel):
 
     def _handle_virement(self):
         beneficiaire = self.beneficiaire_entry.get().strip()
-        montant      = self.montant_entry.get().strip()
+        montant      = self.montant_entry.get().strip().replace(",", ".")
         motif        = self.motif_entry.get().strip()
-        # TODO : logique de virement
-        print(f"Virement → {beneficiaire} | {montant} € | {motif}")
+
+        if not beneficiaire:
+            self._show_error("Le description est requis.")
+            return
+        if not montant:
+            self._show_error("La montant est requise.")
+            return
+        try:
+            montant = float(montant)
+        except ValueError:
+            self._show_error("La montant doit être un nombre valide.")
+            return
+        if montant <= 0:
+            self._show_error("La montant doit être supérieur à 0 €.")
+            return
+        
+        account_id = self.current_user_id
+
+        retrait = Withdrawal(
+        description=motif,
+        montant=-montant,          # retrait = montant négatif
+        categorie_id=1,       # on verra plus tard pour les catégories
+        account_id=account_id,
+        destination_account_id=None,
+    )
+
+        retrait.execute()
+
+        depot = Deposit(
+        description=motif,
+        montant=montant,          # depot = montant négatif
+        categorie_id=1,       # on verra plus tard pour les catégories
+        account_id=beneficiaire,
+        destination_account_id=None,
+    )
+
+        depot.execute()
+
         self.destroy()
         if self._on_success:
             self._on_success(
