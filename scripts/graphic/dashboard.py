@@ -2,6 +2,7 @@ import customtkinter as ctk
 from scripts.graphic.balance_chart import BalanceChart
 from scripts.graphic.virement_window import VirementWindow
 from scripts.graphic.retrait_window import RetraitWindow
+from scripts.graphic.depot_window import DepotWindow
 
 
 # TODO : remplacer par des données réelles issues de la base de données
@@ -95,6 +96,7 @@ class Dashboard(ctk.CTkFrame):
         self._expenses        = expenses
         self._virement_window = None
         self._retrait_window  = None
+        self._depot_window  = None
         self._on_releve       = on_releve
         self._on_notify       = on_notify
         self._build()
@@ -132,8 +134,8 @@ class Dashboard(ctk.CTkFrame):
 
         for icon, label, cmd in [
             ("💸", "Virement", self._open_virement),
-            ("💶", "Retrait",  self._open_retrait),
-            ("💳", "Paiement", lambda: print("Paiement clicked")),
+            ("💳", "Retrait",  self._open_retrait),
+            ("💶", "Dépôt", self._open_depot),
             ("📊", "Épargne",  lambda: print("Épargne clicked")),
             ("📄", "Relevé",   lambda: self._on_releve() if self._on_releve else None),
         ]:
@@ -208,3 +210,11 @@ class Dashboard(ctk.CTkFrame):
                 on_success=lambda t, m: self._notify(t, m, kind="warning"),
             )
             self._retrait_window.focus()
+    
+    def _open_depot(self):
+        if self._depot_window is None or not self._depot_window.winfo_exists():
+            self._depot_window = DepotWindow(
+                master=self,
+                on_success=lambda t, m: self._notify(t, m, kind="warning"),
+            )
+            self._depot_window.focus()
