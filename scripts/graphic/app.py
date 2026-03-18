@@ -2,7 +2,7 @@ import customtkinter as ctk
 from datetime import datetime
 
 from scripts.graphic.sidebar import Sidebar
-from scripts.graphic.dishboard import Dashboard
+from scripts.graphic.dashboard import Dashboard
 from scripts.graphic.account_management_window import AccountManagementWindow
 from scripts.graphic.register_window import RegisterWindow
 from scripts.graphic.home_window import HomeWindow
