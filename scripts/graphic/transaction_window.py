@@ -1,9 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
 from scripts.graphic.pie_chart import PieChart
-from scripts.graphic.transaction_utils import (
-    get_transactions, pie_color, parse_date, col
-)
+from scripts.graphic.transaction_utils import (pie_color, parse_date, col)
 
 
 class TransactionWindow(ctk.CTkFrame):
