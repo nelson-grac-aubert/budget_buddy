@@ -7,7 +7,7 @@ DB_NAME = "budget_buddy"
 
 def validate_password(password):
     """Check password strength."""
-    pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{10,}$'
+    pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[,@$!%*?&]).{10,}$'
     return re.match(pattern, password)
 
 PEPPER = "my_super_secret_pepper"
