@@ -127,6 +127,7 @@ class ReleveView(ctk.CTkFrame):
         def _on_mousewheel(e):
             self._canvas.yview_scroll(int(-1 * (e.delta / 120)), "units")
         self._canvas.bind_all("<MouseWheel>", _on_mousewheel)
+        self.bind("<Destroy>", lambda e: self._canvas.unbind_all("<MouseWheel>"))
 
         self._refresh()
 
