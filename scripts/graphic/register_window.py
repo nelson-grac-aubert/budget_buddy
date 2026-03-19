@@ -9,6 +9,7 @@ class RegisterWindow(ctk.CTkFrame):
         ("min10",   "10 caractères minimum"),
         ("upper",   "1 majuscule"),
         ("lower",   "1 minuscule"),
+        ("digit",   "1 chiffre"),
         ("special", "1 caractère spécial (!@#$%^&*...)"),
     ]
 
@@ -112,6 +113,7 @@ class RegisterWindow(ctk.CTkFrame):
             "min10":   len(pwd) >= 10,
             "upper":   any(c.isupper() for c in pwd),
             "lower":   any(c.islower() for c in pwd),
+            "digit":   any(c.isdigit() for c in pwd),
             "special": any(c in "!@#$%^&*()_+-=[]{}|;':\",./<>?" for c in pwd),
         }
         for key, ok in results.items():
