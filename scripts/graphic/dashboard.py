@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from scripts.graphic.balance_chart import BalanceChart
-from scripts.graphic.virement_window import VirementWindow
-from scripts.graphic.retrait_window import RetraitWindow
+from scripts.graphic.transfer_window import VirementWindow
+from scripts.graphic.withdrawal_window import RetraitWindow
 from scripts.graphic.depot_window import DepotWindow
 
 

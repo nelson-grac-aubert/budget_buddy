@@ -5,7 +5,7 @@ from scripts.graphic.sidebar import Sidebar
 from scripts.graphic.dashboard import Dashboard
 from scripts.graphic.account_management_window import AccountManagementWindow
 from scripts.graphic.register_window import RegisterWindow
-from scripts.graphic.home_window import HomeWindow
+from scripts.graphic.login_window import HomeWindow
 from scripts.graphic.menu_home import HomeMenu
 from scripts.graphic.transaction_window import TransactionWindow
 from scripts.graphic.releve_view import ReleveView
