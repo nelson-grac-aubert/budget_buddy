@@ -13,26 +13,63 @@ class AccountManagementWindow(ctk.CTkToplevel):
         ("special", "1 caractère spécial (!@#$%^&*...)"),
     ]
 
-    def __init__(self, user_id: int, master=None):
-        """Create the account management window.
-
-        Args:
-            user_id: ID of the currently logged-in user.
-                     Passed to the back-end update functions.
-            master:  Parent tkinter widget.
-        """
+    def __init__(self, user_id: int, master=None, on_success=None):
         super().__init__(master)
-        self.user_id = user_id
+        self.user_id    = user_id
+        self._on_success = on_success
         self.title("Account Management")
         self.geometry("420x300")
         self.resizable(False, False)
         self.grab_set()
         self._build_main()
 
+    # ── Alerte ────────────────────────────────────────────────────────────── #
+
+    def _show_alert(self, message: str, success: bool = True):
+        """Affiche une alerte modale de succès ou d'erreur."""
+        alert = ctk.CTkToplevel(self)
+        alert.title("")
+        alert.geometry("340x180")
+        alert.resizable(False, False)
+        alert.grab_set()
+        alert.focus()
+
+        color  = "#22c55e" if success else "#ef4444"
+        bg     = "#14532d" if success else "#7f1d1d"
+        icon   = "✅" if success else "❌"
+
+        ctk.CTkFrame(alert, height=4, fg_color=color,
+                     corner_radius=0).pack(fill="x")
+
+        ctk.CTkLabel(
+            alert,
+            text=f"{icon}  {'Succès' if success else 'Erreur'}",
+            font=ctk.CTkFont(size=16, weight="bold"),
+            text_color=color,
+        ).pack(pady=(20, 6))
+
+        ctk.CTkLabel(
+            alert,
+            text=message,
+            font=ctk.CTkFont(size=13),
+            text_color="#d1d5db",
+            wraplength=280,
+        ).pack(pady=(0, 16))
+
+        ctk.CTkButton(
+            alert,
+            text="OK",
+            width=120, height=36,
+            fg_color=color,
+            hover_color=bg,
+            font=ctk.CTkFont(size=13, weight="bold"),
+            text_color="white",
+            command=alert.destroy,
+        ).pack()
+
     # ── Main menu ─────────────────────────────────────────────────────────── #
 
     def _build_main(self):
-        """Render the two-button main menu."""
         self._clear()
         self.geometry("420x300")
 
@@ -82,10 +119,9 @@ class AccountManagementWindow(ctk.CTkToplevel):
             command=self.destroy,
         ).pack(pady=(12, 0))
 
-    # ── Change password view ───────────────────────────────────────────────── #
+    # ── Change password view  #
 
     def _build_change_password(self):
-        """Render the change-password form with live strength indicators."""
         self._clear()
         self.geometry("420x500")
         self._pwd_visible     = False
@@ -97,7 +133,6 @@ class AccountManagementWindow(ctk.CTkToplevel):
             font=ctk.CTkFont(size=18, weight="bold"),
         ).pack(pady=(24, 16))
 
-        # New password field + visibility toggle
         ctk.CTkLabel(self, text="New password", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
 
@@ -107,7 +142,6 @@ class AccountManagementWindow(ctk.CTkToplevel):
         self.new_pwd_entry = ctk.CTkEntry(
             pwd_row, placeholder_text="••••••••", show="•", height=38)
         self.new_pwd_entry.pack(side="left", fill="x", expand=True)
-        # Bind on the internal tk.Entry to reliably catch every keystroke
         self.new_pwd_entry._entry.bind("<KeyRelease>", lambda e: self._check_rules())
 
         self.eye_btn_new = ctk.CTkButton(
@@ -119,7 +153,6 @@ class AccountManagementWindow(ctk.CTkToplevel):
         )
         self.eye_btn_new.pack(side="left", padx=(4, 0))
 
-        # Live password-rule indicators
         self._rule_labels = {}
         rules_frame = ctk.CTkFrame(self, fg_color="transparent")
         rules_frame.pack(fill="x", padx=30, pady=(0, 16))
@@ -135,7 +168,6 @@ class AccountManagementWindow(ctk.CTkToplevel):
             lbl.pack(anchor="w")
             self._rule_labels[key] = lbl
 
-        # Confirm password field + visibility toggle
         ctk.CTkLabel(self, text="Confirm password", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
 
@@ -155,13 +187,11 @@ class AccountManagementWindow(ctk.CTkToplevel):
         )
         self.eye_btn_confirm.pack(side="left", padx=(4, 0))
 
-        # Error label (shown only when passwords don't match)
         self.pwd_error_label = ctk.CTkLabel(
             self, text="", font=ctk.CTkFont(size=11),
             text_color="#ef4444", anchor="w")
         self.pwd_error_label.pack(fill="x", padx=30)
 
-        # Back / Save buttons
         btns = ctk.CTkFrame(self, fg_color="transparent")
         btns.pack(fill="x", padx=30, pady=(12, 0))
 
@@ -183,10 +213,9 @@ class AccountManagementWindow(ctk.CTkToplevel):
         )
         self.save_pwd_btn.pack(side="left", expand=True)
 
-    # ── Update email view ──────────────────────────────────────────────────── #
+    # ── Update email view 
 
     def _build_update_email(self):
-        """Render the update-email form."""
         self._clear()
         self.geometry("420x320")
 
@@ -203,13 +232,11 @@ class AccountManagementWindow(ctk.CTkToplevel):
             self, placeholder_text="example@email.com", height=38)
         self.email_entry.pack(fill="x", padx=30, pady=(4, 8))
 
-        # Error / success feedback label
         self.email_error_label = ctk.CTkLabel(
             self, text="", font=ctk.CTkFont(size=11),
             text_color="#ef4444", anchor="w")
         self.email_error_label.pack(fill="x", padx=30)
 
-        # Back / Save buttons
         btns = ctk.CTkFrame(self, fg_color="transparent")
         btns.pack(fill="x", padx=30, pady=(20, 0))
 
@@ -229,24 +256,21 @@ class AccountManagementWindow(ctk.CTkToplevel):
             command=self._handle_update_email,
         ).pack(side="left", expand=True)
 
-    # ── Visibility toggles ─────────────────────────────────────────────────── #
+    # ── Visibility toggles 
 
     def _toggle_new(self):
-        """Toggle visibility of the new-password field."""
         self._pwd_visible = not self._pwd_visible
         self.new_pwd_entry.configure(show="" if self._pwd_visible else "•")
         self.eye_btn_new.configure(text="👁" if self._pwd_visible else "🙈")
 
     def _toggle_confirm(self):
-        """Toggle visibility of the confirm-password field."""
         self._confirm_visible = not self._confirm_visible
         self.confirm_pwd_entry.configure(show="" if self._confirm_visible else "•")
         self.eye_btn_confirm.configure(text="👁" if self._confirm_visible else "🙈")
 
-    # ── Live password validation ───────────────────────────────────────────── #
+    # ── Live password validation 
 
     def _check_rules(self):
-        """Update the rule indicators and enable Save when all rules pass."""
         pwd = self.new_pwd_entry.get()
         results = {
             "min10":   len(pwd) >= 10,
@@ -264,14 +288,12 @@ class AccountManagementWindow(ctk.CTkToplevel):
         self.save_pwd_btn.configure(
             state="normal" if all(results.values()) else "disabled")
 
-    # ── Form handlers ──────────────────────────────────────────────────────── #
+    # ── Form handlers 
 
     def _handle_change_password(self):
-        """Validate confirmation match then call the back-end update function."""
         new_pwd     = self.new_pwd_entry.get()
         confirm_pwd = self.confirm_pwd_entry.get()
 
-        # Check that both fields match before hitting the database
         if new_pwd != confirm_pwd:
             self.pwd_error_label.configure(
                 text="Passwords do not match.", text_color="#ef4444")
@@ -280,13 +302,13 @@ class AccountManagementWindow(ctk.CTkToplevel):
         success, message = update_password(self.user_id, new_pwd)
 
         if success:
+            if self._on_success:
+                self._on_success("🔒 Mot de passe modifié", "Votre mot de passe a été mis à jour.", "success")
             self._build_main()
         else:
-            self.pwd_error_label.configure(
-                text=message, text_color="#ef4444")
+            self._show_alert(message, success=False)
 
     def _handle_update_email(self):
-        """Validate email format then call the back-end update function."""
         new_email = self.email_entry.get().strip()
 
         if not validate_email(new_email):
@@ -297,14 +319,14 @@ class AccountManagementWindow(ctk.CTkToplevel):
         success, message = update_email(self.user_id, new_email)
 
         if success:
+            if self._on_success:
+                self._on_success("✉️ Email modifié", "Votre adresse email a été mise à jour.", "info")
             self._build_main()
         else:
-            self.email_error_label.configure(
-                text=message, text_color="#ef4444")
+            self._show_alert(message, success=False)
 
-    # ── Utility ───────────────────────────────────────────────────────────── #
+    # ── Utility 
 
     def _clear(self):
-        """Destroy all child widgets before rebuilding a view."""
         for widget in self.winfo_children():
             widget.destroy()

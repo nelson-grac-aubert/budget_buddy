@@ -3,28 +3,28 @@ from scripts.logic.class_deposit import Deposit
 
 
 class DepotWindow(ctk.CTkToplevel):
-    """Fenêtre modale pour effectuer un depot."""
+    """Fenêtre modale pour effectuer un dépôt."""
 
     def __init__(self, current_user_id, master=None, on_success=None):
         super().__init__(master)
-        self.title("Depot")
-        self.geometry("420x380")
+        self.title("Dépôt")
+        self.geometry("420x470")
         self.resizable(False, False)
         self.grab_set()
-        self._on_success = on_success
-        self._build()
+        self._on_success     = on_success
         self.current_user_id = current_user_id
+        self._build()
 
     def _build(self):
         ctk.CTkLabel(
             self,
-            text="💵  Faire un Depot",
+            text="💶  Faire un dépôt",
             font=ctk.CTkFont(size=20, weight="bold"),
         ).pack(pady=(24, 4))
 
         ctk.CTkLabel(
             self,
-            text="Renseignez les informations du Depot.",
+            text="Renseignez les informations du dépôt.",
             font=ctk.CTkFont(size=13),
             text_color="gray",
         ).pack(pady=(0, 20))
@@ -32,18 +32,33 @@ class DepotWindow(ctk.CTkToplevel):
         ctk.CTkFrame(self, height=1, fg_color="#3a3a3a").pack(
             fill="x", padx=30, pady=(0, 20))
 
+        # Description — champ texte libre
         ctk.CTkLabel(self, text="Description", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.description_entry = ctk.CTkEntry(
             self, placeholder_text="Cadeau de mamie", height=38)
         self.description_entry.pack(fill="x", padx=30, pady=(4, 14))
 
+        # Montant
         ctk.CTkLabel(self, text="Montant (€)", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.montant_entry = ctk.CTkEntry(
             self, placeholder_text="0,00", height=38)
-        self.montant_entry.pack(fill="x", padx=30, pady=(4, 6))
+        self.montant_entry.pack(fill="x", padx=30, pady=(4, 14))
 
+        # Catégorie — menu déroulant
+        ctk.CTkLabel(self, text="Catégorie", anchor="w",
+                     font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
+        self.categorie_var = ctk.StringVar(value="Espèces")
+        ctk.CTkOptionMenu(
+            self,
+            variable=self.categorie_var,
+            values=["Espèces"],
+            height=38,
+            font=ctk.CTkFont(size=13),
+        ).pack(fill="x", padx=30, pady=(4, 6))
+
+        # Label d'erreur
         self.error_label = ctk.CTkLabel(
             self, text="",
             font=ctk.CTkFont(size=11),
@@ -52,6 +67,7 @@ class DepotWindow(ctk.CTkToplevel):
         )
         self.error_label.pack(fill="x", padx=30)
 
+        # Boutons
         btns = ctk.CTkFrame(self, fg_color="transparent")
         btns.pack(fill="x", padx=30, pady=(20, 0))
 
@@ -71,47 +87,43 @@ class DepotWindow(ctk.CTkToplevel):
             command=self._handle_depot,
         ).pack(side="left", expand=True)
 
+    def _show_error(self, message: str):
+        self.error_label.configure(text=f"⚠  {message}" if message else "")
+
     def _handle_depot(self):
         description = self.description_entry.get().strip()
-        montant_str    = self.montant_entry.get().strip().replace(",", ".")
+        montant_str = self.montant_entry.get().strip().replace(",", ".")
+        categorie   = self.categorie_var.get()
 
         if not description:
-            self._show_error("Le description est requis.")
+            self._show_error("La description est requise.")
             return
         if not montant_str:
-            self._show_error("La montant est requise.")
+            self._show_error("Le montant est requis.")
             return
         try:
             montant = float(montant_str)
         except ValueError:
-            self._show_error("La montant doit être un nombre valide.")
+            self._show_error("Le montant doit être un nombre valide.")
             return
         if montant <= 0:
-            self._show_error("La montant doit être supérieur à 0 €.")
+            self._show_error("Le montant doit être supérieur à 0 €.")
             return
 
-        # Renseigner les éléments du depot 
-
-        account_id = self.current_user_id
+        self._show_error("")
 
         depot = Deposit(
-        description=description,
-        montant=montant,          # depot = montant négatif
-        categorie_id=1,       # on verra plus tard pour les catégories
-        account_id=account_id,
-        destination_account_id=None,
-    )
-
+            description=description,
+            montant=montant,
+            categorie_id=1,       # TODO : mapper categorie → id en DB
+            account_id=self.current_user_id,
+            destination_account_id=None,
+        )
         depot.execute()
 
-        self._show_error("")
-        print(f"depot → {description} | {montant:.2f} €")
         self.destroy()
         if self._on_success:
             self._on_success(
-                "💵 Depot effectué",
-                f"{montant:.2f} € déposé pour {description}",
+                "💶 Dépôt effectué",
+                f"{montant:.2f} € déposé — {description}",
             )
-
-    def _show_error(self, message: str):
-        self.error_label.configure(text=f"⚠  {message}" if message else "")
