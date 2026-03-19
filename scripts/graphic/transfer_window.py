@@ -116,5 +116,5 @@ class VirementWindow(ctk.CTkToplevel):
         if self._on_success:
             self._on_success(
                 "💸 Virement effectué",
-                f"{montant} € envoyé à {beneficiaire}" + (f" — {motif}" if motif else ""),
+                f"{montant} € envoyé au compte n° {beneficiaire}" + (f" — {motif}" if motif else ""),
             )
