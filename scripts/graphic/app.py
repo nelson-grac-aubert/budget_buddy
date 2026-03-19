@@ -160,7 +160,10 @@ class BudgetBuddyApp(ctk.CTk):
     def _open_account_management(self):
         if self._account_window is None or not self._account_window.winfo_exists():
             self._account_window = AccountManagementWindow(
-                user_id=self.current_user_id, master=self)
+                user_id=self.current_user_id,
+                master=self,
+                on_success=self._on_new_notification,
+            )
             self._account_window.focus()
         else:
             self._account_window.focus()
