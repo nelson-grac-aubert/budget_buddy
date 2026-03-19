@@ -77,7 +77,8 @@ class Dashboard(ctk.CTkFrame):
                  fullname: str         = "",
                  on_releve=None,
                  on_notify=None,
-                 on_logout=None):
+                 on_logout=None,
+                 on_refresh=None):
         super().__init__(master, corner_radius=0, fg_color="transparent")
  
         self._monthly_balance = monthly_balance or {}
@@ -91,6 +92,7 @@ class Dashboard(ctk.CTkFrame):
         self._on_releve       = on_releve
         self._on_notify       = on_notify
         self._on_logout       = on_logout
+        self._on_refresh      = on_refresh
         self.current_user_id  = current_user_id
         self._build()
  
@@ -192,6 +194,8 @@ class Dashboard(ctk.CTkFrame):
         _Toast(self.winfo_toplevel(), title, message, kind)
         if self._on_notify:
             self._on_notify(title, message, kind)
+        if self._on_refresh:
+            self._on_refresh()
  
     # ── Déconnexion 
  

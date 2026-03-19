@@ -115,6 +115,7 @@ class BudgetBuddyApp(ctk.CTk):
             on_releve=self._show_releve,
             on_notify=self._on_new_notification,
             on_logout=self._logout,
+            on_refresh=self._show_dashboard,
         ).pack(fill="both", expand=True)
 
     def _show_transactions(self):
