@@ -9,7 +9,7 @@ class VirementWindow(ctk.CTkToplevel):
     def __init__(self, current_user_id, master=None, on_success=None):
         super().__init__(master)
         self.title("Nouveau virement")
-        self.geometry("420x500")
+        self.geometry("420x550")
         self.resizable(False, False)
         self.grab_set()
         self._on_success     = on_success

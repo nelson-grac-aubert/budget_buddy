@@ -20,7 +20,7 @@ class RegisterWindow(ctk.CTkFrame):
         self._build()
 
     def _build(self):
-        container = ctk.CTkFrame(self, width=380, height=640, corner_radius=16)
+        container = ctk.CTkFrame(self, width=380, height=700, corner_radius=16)
         container.place(relx=0.5, rely=0.5, anchor="center")
         container.pack_propagate(False)
 
