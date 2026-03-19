@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from scripts.logic.login_register import handle_login
 
+
 class HomeWindow(ctk.CTkFrame):
     """Formulaire de connexion."""
 
@@ -13,7 +14,7 @@ class HomeWindow(ctk.CTkFrame):
         self._build()
 
     def _build(self):
-        container = ctk.CTkFrame(self, width=360, height=440, corner_radius=16)
+        container = ctk.CTkFrame(self, width=360, height=460, corner_radius=16)
         container.place(relx=0.5, rely=0.5, anchor="center")
         container.pack_propagate(False)
 
@@ -36,13 +37,14 @@ class HomeWindow(ctk.CTkFrame):
         self.email_entry = ctk.CTkEntry(
             container, placeholder_text="exemple@email.com", height=38)
         self.email_entry.pack(fill="x", padx=32, pady=(4, 14))
+        
 
         # Mot de passe
         ctk.CTkLabel(container, text="Mot de passe", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=32)
 
         pwd_row = ctk.CTkFrame(container, fg_color="transparent")
-        pwd_row.pack(fill="x", padx=32, pady=(4, 24))
+        pwd_row.pack(fill="x", padx=32, pady=(4, 8))
 
         self.password_entry = ctk.CTkEntry(
             pwd_row, placeholder_text="••••••••", show="•", height=38)
@@ -59,6 +61,15 @@ class HomeWindow(ctk.CTkFrame):
             command=self._toggle_password,
         )
         self.eye_btn.pack(side="left", padx=(4, 0))
+
+        # Label d'erreur
+        self.error_label = ctk.CTkLabel(
+            container, text="",
+            font=ctk.CTkFont(size=11),
+            text_color="#ef4444",
+            anchor="w",
+        )
+        self.error_label.pack(fill="x", padx=32, pady=(0, 16))
 
         # Connexion
         ctk.CTkButton(
@@ -94,21 +105,19 @@ class HomeWindow(ctk.CTkFrame):
         self.password_entry.configure(show="" if self._pwd_visible else "•")
         self.eye_btn.configure(text="👁" if self._pwd_visible else "🙈")
 
-    
     def _handle_login(self):
-        email = self.email_entry.get()
+        email    = self.email_entry.get().strip()
         password = self.password_entry.get()
 
         result = handle_login(email, password)
 
-        # Cas d'échec → handle_login renvoie seulement 2 valeurs
-        if result[0] is False:
-            success, message = result
-            print("[ERROR]", message)
+        # Échec — 2 valeurs
+        if not result[0]:
+            self.error_label.configure(text=f"⚠  {result[1]}")
             return
 
-        # Cas de succès → handle_login renvoie 3 valeurs
-        success, message, user_id = result
+        # Succès — 4 valeurs : True, message, user_id, user_type
+        _, _, user_id, user_type = result
 
-        print("[OK] Login successful")
-        self._on_login(user_id)
+        self.error_label.configure(text="")
+        self._on_login(user_id, is_admin=(user_type == "admin"))

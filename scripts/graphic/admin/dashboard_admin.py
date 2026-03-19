@@ -1,18 +1,5 @@
 import customtkinter as ctk
-
-
-# TODO : remplacer par get_all_accounts() quand la table admin sera prête
-def _get_all_accounts_placeholder() -> list:
-    return [
-        {"account_id": 1, "fullname": "Sophie Martin",  "email": "s.martin@email.com",  "balance":  12450.00},
-        {"account_id": 2, "fullname": "Lucas Bernard",  "email": "l.bernard@email.com", "balance":   8320.50},
-        {"account_id": 3, "fullname": "Camille Dubois", "email": "c.dubois@email.com",  "balance":   -250.75},
-        {"account_id": 4, "fullname": "Antoine Petit",  "email": "a.petit@email.com",   "balance":   3890.20},
-        {"account_id": 5, "fullname": "Léa Moreau",     "email": "l.moreau@email.com",  "balance":   1540.00},
-        {"account_id": 6, "fullname": "Hugo Leroy",     "email": "h.leroy@email.com",   "balance":    780.40},
-        {"account_id": 7, "fullname": "Emma Roux",      "email": "e.roux@email.com",    "balance":   -120.30},
-        {"account_id": 8, "fullname": "Nathan Simon",   "email": "n.simon@email.com",   "balance":  -1850.00},
-    ]
+from scripts.logic.dashboard_data import get_all_accounts
 
 
 class AdminDashboard(ctk.CTkFrame):
@@ -26,10 +13,9 @@ class AdminDashboard(ctk.CTkFrame):
         self._search    = ctk.StringVar()
         self._build()
 
-    # ── Construction 
+    # ── Construction #
 
     def _build(self):
-        # En-tête
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.pack(fill="x", pady=(0, 16))
 
@@ -47,7 +33,6 @@ class AdminDashboard(ctk.CTkFrame):
             command=lambda: self._on_logout() if self._on_logout else None,
         ).pack(side="right")
 
-        # Barre recherche + tri
         toolbar = ctk.CTkFrame(self, corner_radius=10)
         toolbar.pack(fill="x", pady=(0, 12), ipady=8)
 
@@ -91,11 +76,10 @@ class AdminDashboard(ctk.CTkFrame):
 
         self._load()
 
-    # ── Données 
+    # ── Données#
 
     def _load(self):
-        # TODO : remplacer par get_all_accounts() quand disponible
-        self._accounts = _get_all_accounts_placeholder()
+        self._accounts = get_all_accounts()
         self._render()
 
     def _filtered(self) -> list:
@@ -108,7 +92,7 @@ class AdminDashboard(ctk.CTkFrame):
         data.sort(key=lambda a: a["balance"], reverse=not self._sort_asc)
         return data
 
-    # ── Rendu 
+    # ── Rendu  #
 
     def _render(self):
         for w in self._table.winfo_children():
@@ -133,7 +117,14 @@ class AdminDashboard(ctk.CTkFrame):
     def _render_header(self):
         header = ctk.CTkFrame(self._table, fg_color="#1a7a7a", corner_radius=0)
         header.pack(fill="x", padx=2, pady=(2, 0))
-        for col, w in [("ID", 50), ("Nom complet", 160), ("Email", 200), ("Créé le", 90), ("Solde", 110)]:
+        for col, w in [
+            ("ID user", 60),
+            ("ID compte", 70),
+            ("Nom complet", 150),
+            ("Email", 190),
+            
+            ("Solde", 110),
+        ]:
             ctk.CTkLabel(
                 header, text=col, width=w, anchor="center",
                 font=ctk.CTkFont(size=12, weight="bold"), text_color="white",
@@ -148,10 +139,11 @@ class AdminDashboard(ctk.CTkFrame):
         row.pack(fill="x", padx=2)
 
         for text, w, anchor, fg in [
-            (f"#{account['account_id']}", 50,  "center", "#9ca3af"),
-            (account["fullname"],          160, "w",      "#d1d5db"),
-            (account["email"],             200, "w",      "#9ca3af"),
-            (account["created_at"],        90,  "center", "#9ca3af"),
+            (f"#{account['user_id']}",    60,  "center", "#9ca3af"),
+            (f"#{account['account_id']}", 70,  "center", "#6b7280"),
+            (account["fullname"],          150, "w",      "#d1d5db"),
+            (account["email"],             190, "w",      "#9ca3af"),
+            (account.get("created_at", "-"), 80, "center", "#9ca3af"),
             (f"{sign}{account['balance']:,.2f} €", 110, "e", balance_color),
         ]:
             ctk.CTkLabel(
@@ -180,7 +172,8 @@ class AdminDashboard(ctk.CTkFrame):
             text_color=color, anchor="e",
         ).pack(side="right", padx=16, pady=10)
 
-    # ── Actions 
+    # ── Actions  #
+
     def _reset(self):
         self._search.set("")
         self._render()
