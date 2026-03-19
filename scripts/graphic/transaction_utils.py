@@ -29,6 +29,7 @@ def col(key: str) -> str:
         "bold":      "#0d3030",
         "debit":     "#ef4444",
         "credit":    "#22c55e",
+        "transfer":  "#3b82f6",
         "head":      "#ffffff",
         "normal":    "#d1d5db",
         "gray":      "#9ca3af",
@@ -61,7 +62,7 @@ def get_categorie_id(label: str) -> int:
 
 
 def types() -> list:
-    return ["Tous", "Débit", "Crédit"]
+    return ["Tous", "Débit", "Crédit", "Transfert"]
 
 
 def tris() -> list:

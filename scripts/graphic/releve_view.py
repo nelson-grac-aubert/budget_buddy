@@ -213,9 +213,9 @@ class ReleveView(ctk.CTkFrame):
             cell(t["description"], widths[2])
             cell(t["categorie"],   widths[3])
             cell(t["type"],        widths[4],
-                fg=col("credit") if t["type"] == "Crédit" else col("debit"))
+                fg=col("transfer") if t["type"] == "Transfert" else col("credit") if t["type"] == "Crédit" else col("debit"))
             cell(f"{sign}{t['montant']:,.2f} €", widths[5],
-                fg=col("credit") if t["montant"] >= 0 else col("debit"))
+                fg=col("transfer") if t["type"] == "Transfert" else col("credit") if t["montant"] >= 0 else col("debit"))
 
 
             tk.Frame(self.table_container, bg="#2d3a3a", height=1).pack(fill="x", padx=2)

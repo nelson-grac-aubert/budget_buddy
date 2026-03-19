@@ -1,6 +1,5 @@
 import customtkinter as ctk
-from scripts.logic.class_withdrawal import Withdrawal
-from scripts.logic.class_deposit import Deposit
+from scripts.logic.class_transfer import Transfer
 from scripts.graphic.transaction_utils import categories, get_categorie_id
 
 
@@ -123,23 +122,13 @@ class VirementWindow(ctk.CTkToplevel):
 
         self._show_error("")
 
-        retrait = Withdrawal(
-            description=motif,
-            montant=-montant,
-            categorie_id=get_categorie_id(categorie),
-            account_id=self.current_user_id,
-            destination_account_id=None,
-        )
-        retrait.execute()
-
-        depot = Deposit(
+        Transfer(
             description=motif,
             montant=montant,
             categorie_id=get_categorie_id(categorie),
-            account_id=beneficiaire,
-            destination_account_id=None,
-        )
-        depot.execute()
+            source_account_id=self.current_user_id,
+            destination_account_id=beneficiaire,
+        ).execute()
 
         self.destroy()
         if self._on_success:

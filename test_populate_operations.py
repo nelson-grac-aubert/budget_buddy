@@ -35,7 +35,7 @@ def date_in_month(year, month, day=None):
     (safe for all months including February).
     """
     if day is None:
-        day = random.randint(1, 28)
+        day = random.randint(1, 18)
     return datetime(year, month, day)
 
 

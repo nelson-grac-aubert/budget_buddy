@@ -209,11 +209,17 @@ def get_transactions_from_db(user_id: int):
     # Adapt to the format expected by Cecilia's "relevé" window
     formatted = []
     for r in rows:
+        if r["type"] == "transfer":
+            type_label = "Transfert"
+        elif r["amount"] >= 0:
+            type_label = "Crédit"
+        else:
+            type_label = "Débit"
         formatted.append({
         "date": r["date"].strftime("%d/%m/%Y"),
         "description": r["description"],
         "categorie": r["category"],
-        "type": "Crédit" if r["amount"] >= 0 else "Débit",
+        "type": type_label,
         "montant": float(r["amount"]),
         "reference": r["reference"],
         })
