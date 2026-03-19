@@ -5,6 +5,8 @@ OPERATION_TYPES = [
 ]
 
 OPERATION_CATEGORIES = [
+    "Espèces",
+    "Chèque",
     "Loyer",
     "Courses",
     "Restaurants",

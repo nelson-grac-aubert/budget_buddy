@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from scripts.logic.class_withdrawal import Withdrawal
 from scripts.logic.class_deposit import Deposit
-from scripts.graphic.transaction_utils import categories
+from scripts.graphic.transaction_utils import categories, get_categorie_id
 
 
 class VirementWindow(ctk.CTkToplevel):
@@ -126,7 +126,7 @@ class VirementWindow(ctk.CTkToplevel):
         retrait = Withdrawal(
             description=motif,
             montant=-montant,
-            categorie_id=1,       # TODO : mapper categorie → id en DB
+            categorie_id=get_categorie_id(categorie),
             account_id=self.current_user_id,
             destination_account_id=None,
         )
@@ -135,7 +135,7 @@ class VirementWindow(ctk.CTkToplevel):
         depot = Deposit(
             description=motif,
             montant=montant,
-            categorie_id=1,       # TODO : mapper categorie → id en DB
+            categorie_id=get_categorie_id(categorie),
             account_id=beneficiaire,
             destination_account_id=None,
         )

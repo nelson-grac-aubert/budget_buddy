@@ -35,7 +35,7 @@ class BankOperation:
             cursor.execute("""
                 INSERT INTO Operation
                     (account_id, destination_account_id, amount, description, type_id, date, category_id, reference)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """, (
                 self.account_id,
                 self.destination_account_id,

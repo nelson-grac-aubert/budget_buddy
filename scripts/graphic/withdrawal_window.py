@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from scripts.logic.class_withdrawal import Withdrawal
-from scripts.graphic.transaction_utils import categories
+from scripts.graphic.transaction_utils import categories, get_categorie_id
 
 
 class RetraitWindow(ctk.CTkToplevel):
@@ -116,7 +116,7 @@ class RetraitWindow(ctk.CTkToplevel):
         retrait = Withdrawal(
             description=description,
             montant=-montant,
-            categorie_id=1,       # TODO : mapper categorie → id en DB
+            categorie_id=get_categorie_id(categorie),
             account_id=self.current_user_id,
             destination_account_id=None,
         )

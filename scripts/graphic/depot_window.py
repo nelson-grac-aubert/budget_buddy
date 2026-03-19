@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from scripts.logic.class_deposit import Deposit
+from scripts.graphic.transaction_utils import categories_depot, get_categorie_id
 
 
 class DepotWindow(ctk.CTkToplevel):
@@ -49,11 +50,12 @@ class DepotWindow(ctk.CTkToplevel):
         # Catégorie — menu déroulant
         ctk.CTkLabel(self, text="Catégorie", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
-        self.categorie_var = ctk.StringVar(value="Espèces")
+        _cats = categories_depot()
+        self.categorie_var = ctk.StringVar(value=_cats[0])
         ctk.CTkOptionMenu(
             self,
             variable=self.categorie_var,
-            values=["Espèces"],
+            values=_cats,
             height=38,
             font=ctk.CTkFont(size=13),
         ).pack(fill="x", padx=30, pady=(4, 6))
@@ -115,7 +117,7 @@ class DepotWindow(ctk.CTkToplevel):
         depot = Deposit(
             description=description,
             montant=montant,
-            categorie_id=1,       # TODO : mapper categorie → id en DB
+            categorie_id=get_categorie_id(categorie),
             account_id=self.current_user_id,
             destination_account_id=None,
         )

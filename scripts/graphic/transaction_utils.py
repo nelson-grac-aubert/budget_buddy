@@ -1,4 +1,5 @@
 from datetime import datetime
+from scripts.logic.database_connection import get_connection
 
 def pie_color(categorie: str) -> str:
     return {
@@ -37,6 +38,26 @@ def col(key: str) -> str:
 def categories() -> list:
     return ["Toutes", "Loyer", "Courses", "Restaurants", "Abonnements",
             "Transport", "Santé", "Loisirs", "Salaire", "Revenus"]
+
+
+def categories_depot() -> list:
+    """Catégories réservées aux dépôts (espèces / chèque)."""
+    return ["Espèces", "Chèque"]
+
+
+def get_categorie_id(label: str) -> int:
+    """Résout le label d'une catégorie en son id dans OperationCategory.
+    Retourne 1 par défaut si non trouvé."""
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM OperationCategory WHERE label = %s", (label,))
+        row = cursor.fetchone()
+        conn.close()
+        return row[0] if row else 1
+    except Exception as e:
+        print("Erreur résolution catégorie :", e)
+        return 1
 
 
 def types() -> list:
