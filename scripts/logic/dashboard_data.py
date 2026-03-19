@@ -1,7 +1,48 @@
 from scripts.logic.database_connection import get_connection
 from datetime import datetime
 
+def get_user_fullname(user_id: int) -> str:
+    """Return the full name of the user as 'Firstname Lastname'.
+
+    Used by the dashboard greeting. Returns an empty string if the
+    user is not found, so the label degrades gracefully.
+    """
+    connection = get_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute(
+        "SELECT first_name, last_name FROM User WHERE id = %s",
+        (user_id,)
+    )
+
+    row = cursor.fetchone()
+    cursor.close()
+    connection.close()
+
+    if not row:
+        return ""
+    return f"{row['first_name']} {row['last_name']}"
+
+
 def get_account_balance(user_id: int) -> float:
+    """Return the current balance of the user's account."""
+    connection = get_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT balance
+        FROM Account
+        WHERE user_id = %s
+    """, (user_id,))
+
+    row = cursor.fetchone()
+    cursor.close()
+    connection.close()
+
+    return row["balance"] if row else 0.0
+
+
+
     """Return the current balance of the user's account."""
     connection = get_connection()
     cursor = connection.cursor(dictionary=True)
@@ -126,11 +167,15 @@ def get_dashboard_data(user_id: int) -> dict:
     # Balance curve: one point per operation, oldest to newest
     monthly_balance = get_balance_over_time(user_id)
 
+    # Full name for the dashboard greeting ("Welcome Firstname Lastname")
+    fullname = get_user_fullname(user_id)
+
     return {
         "balance":         balance,
         "income":          income,
         "expenses":        expenses,
         "monthly_balance": monthly_balance,
+        "fullname":        fullname,
     }
 
 

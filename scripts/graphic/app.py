@@ -107,6 +107,7 @@ class BudgetBuddyApp(ctk.CTk):
             monthly_balance=data["monthly_balance"],
             income=data["income"],
             expenses=data["expenses"],
+            fullname=data["fullname"],
             on_releve=self._show_releve,
             on_notify=self._on_new_notification,
         ).pack(fill="both", expand=True)
@@ -150,7 +151,7 @@ class BudgetBuddyApp(ctk.CTk):
 
     def _open_account_management(self):
         if self._account_window is None or not self._account_window.winfo_exists():
-            self._account_window = AccountManagementWindow(master=self)
+            self._account_window = AccountManagementWindow(user_id=self.current_user_id, master=self)
             self._account_window.focus()
         else:
             self._account_window.focus()
