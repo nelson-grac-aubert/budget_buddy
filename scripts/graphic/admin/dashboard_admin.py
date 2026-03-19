@@ -4,14 +4,14 @@ import customtkinter as ctk
 # TODO : remplacer par get_all_accounts() quand la table admin sera prête
 def _get_all_accounts_placeholder() -> list:
     return [
-        {"account_id": 1, "fullname": "Sophie Martin",  "email": "s.martin@email.com",  "balance":  12450.00, "created_at": "12/03/2023"},
-        {"account_id": 2, "fullname": "Lucas Bernard",  "email": "l.bernard@email.com", "balance":   8320.50, "created_at": "05/06/2023"},
-        {"account_id": 3, "fullname": "Camille Dubois", "email": "c.dubois@email.com",  "balance":   5210.75, "created_at": "18/01/2024"},
-        {"account_id": 4, "fullname": "Antoine Petit",  "email": "a.petit@email.com",   "balance":   3890.20, "created_at": "22/09/2023"},
-        {"account_id": 5, "fullname": "Léa Moreau",     "email": "l.moreau@email.com",  "balance":   1540.00, "created_at": "07/11/2023"},
-        {"account_id": 6, "fullname": "Hugo Leroy",     "email": "h.leroy@email.com",   "balance":    780.40, "created_at": "14/02/2024"},
-        {"account_id": 7, "fullname": "Emma Roux",      "email": "e.roux@email.com",    "balance":   -120.30, "created_at": "30/04/2024"},
-        {"account_id": 8, "fullname": "Nathan Simon",   "email": "n.simon@email.com",   "balance":  -1850.00, "created_at": "03/07/2024"},
+        {"account_id": 1, "fullname": "Sophie Martin",  "email": "s.martin@email.com",  "balance":  12450.00},
+        {"account_id": 2, "fullname": "Lucas Bernard",  "email": "l.bernard@email.com", "balance":   8320.50},
+        {"account_id": 3, "fullname": "Camille Dubois", "email": "c.dubois@email.com",  "balance":   -250.75},
+        {"account_id": 4, "fullname": "Antoine Petit",  "email": "a.petit@email.com",   "balance":   3890.20},
+        {"account_id": 5, "fullname": "Léa Moreau",     "email": "l.moreau@email.com",  "balance":   1540.00},
+        {"account_id": 6, "fullname": "Hugo Leroy",     "email": "h.leroy@email.com",   "balance":    780.40},
+        {"account_id": 7, "fullname": "Emma Roux",      "email": "e.roux@email.com",    "balance":   -120.30},
+        {"account_id": 8, "fullname": "Nathan Simon",   "email": "n.simon@email.com",   "balance":  -1850.00},
     ]
 
 
