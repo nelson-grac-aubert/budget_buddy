@@ -76,36 +76,42 @@ def populate_operations_for_account(account_id=1):
     
     operations = [
 
-        (5, +800,  "Salaire partiel",          "deposit",    "bills"),
-        (5, -400,  "Loyer",                    "withdrawal", "rent"),
-        (5, -60,   "Courses",                  "withdrawal", "food"),
-        (5, -15,   "Streaming",                "withdrawal", "hobbies"),
-        (4, +1200, "Salaire mensuel",           "deposit",    "bills"),
-        (4, +500,  "Prime exceptionnelle",      "deposit",    "bills"),
-        (4, -400,  "Loyer",                     "withdrawal", "rent"),
-        (4, -80,   "Restaurant en famille",     "withdrawal", "food"),
-        (4, -45,   "Essence",                   "withdrawal", "car"),
-        (4, -19,   "Netflix",                   "withdrawal", "hobbies"),
-        (3, +1200, "Salaire mensuel",           "deposit",    "bills"),
-        (3, -400,  "Loyer",                     "withdrawal", "rent"),
-        (3, -300,  "Billets d'avion",           "withdrawal", "travels"),
-        (3, -120,  "Hotel",                     "withdrawal", "travels"),
-        (3, -90,   "Courses semaine",           "withdrawal", "food"),
-        (3, -45,   "Essence",                   "withdrawal", "car"),
-        (2, +1200, "Salaire mensuel",           "deposit",    "bills"),
-        (2, +200,  "Remboursement ami",         "deposit",    "hobbies"),
-        (2, -400,  "Loyer",                     "withdrawal", "rent"),
-        (2, -65,   "Restaurant",                "withdrawal", "food"),
-        (2, -55,   "Courses",                   "withdrawal", "food"),
-        (2, -19,   "Spotify",                   "withdrawal", "hobbies"),
-        (1, +1200, "Salaire mensuel",           "deposit",    "bills"),
-        (1, -400,  "Loyer",                     "withdrawal", "rent"),
-        (1, -75,   "Courses du mois",           "withdrawal", "food"),
-        (1, -45,   "Plein d'essence",           "withdrawal", "car"),
-        (1, -12,   "Abonnement salle de sport", "withdrawal", "hobbies"),
-        (0, +1200, "Salaire mensuel",           "deposit",    "bills"),
-        (0, -400,  "Loyer",                     "withdrawal", "rent"),
-        (0, -30,   "Courses express",           "withdrawal", "food"),
+    (5, +800,  "Salaire partiel",          "deposit",    "Revenus"),
+    (5, -400,  "Loyer",                    "withdrawal", "Loyer"),
+    (5, -60,   "Courses",                  "withdrawal", "Courses"),
+    (5, -15,   "Streaming",                "withdrawal", "Abonnements"),
+
+    (4, +1200, "Salaire mensuel",          "deposit",    "Salaire"),
+    (4, +500,  "Prime exceptionnelle",     "deposit",    "Revenus"),
+    (4, -400,  "Loyer",                    "withdrawal", "Loyer"),
+    (4, -80,   "Restaurant en famille",    "withdrawal", "Restaurants"),
+    (4, -45,   "Essence",                  "withdrawal", "Transport"),
+    (4, -19,   "Netflix",                  "withdrawal", "Abonnements"),
+
+    (3, +1200, "Salaire mensuel",          "deposit",    "Salaire"),
+    (3, -400,  "Loyer",                    "withdrawal", "Loyer"),
+    (3, -300,  "Billets d'avion",          "withdrawal", "Loisirs"),
+    (3, -120,  "Hotel",                    "withdrawal", "Loisirs"),
+    (3, -90,   "Courses semaine",          "withdrawal", "Courses"),
+    (3, -45,   "Essence",                  "withdrawal", "Transport"),
+
+    (2, +1200, "Salaire mensuel",          "deposit",    "Salaire"),
+    (2, +200,  "Remboursement ami",        "deposit",    "Revenus"),
+    (2, -400,  "Loyer",                    "withdrawal", "Loyer"),
+    (2, -65,   "Restaurant",               "withdrawal", "Restaurants"),
+    (2, -55,   "Courses",                  "withdrawal", "Courses"),
+    (2, -19,   "Spotify",                  "withdrawal", "Abonnements"),
+
+    (1, +1200, "Salaire mensuel",          "deposit",    "Salaire"),
+    (1, -400,  "Loyer",                    "withdrawal", "Loyer"),
+    (1, -75,   "Courses du mois",          "withdrawal", "Courses"),
+    (1, -45,   "Plein d'essence",          "withdrawal", "Transport"),
+    (1, -12,   "Abonnement salle de sport","withdrawal", "Loisirs"),
+
+    (0, +1200, "Salaire mensuel",          "deposit",    "Salaire"),
+    (0, -400,  "Loyer",                    "withdrawal", "Loyer"),
+    (0, -30,   "Courses express",          "withdrawal", "Courses")
+
     ]
 
     for months_back, amount, desc, type_label, category_label in operations:

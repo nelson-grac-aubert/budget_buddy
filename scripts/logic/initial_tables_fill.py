@@ -5,13 +5,15 @@ OPERATION_TYPES = [
 ]
 
 OPERATION_CATEGORIES = [
-    "ATM",
-    "rent",
-    "bills",
-    "food",
-    "car",
-    "hobbies",
-    "travels"
+    "Loyer",
+    "Courses",
+    "Restaurants",
+    "Abonnements",
+    "Transport",
+    "Santé",
+    "Loisirs",
+    "Salaire",
+    "Revenus"
 ]
 
 NOTIFICATION_TYPES = [

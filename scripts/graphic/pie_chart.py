@@ -37,11 +37,5 @@ class PieChart(tk.Canvas):
             lx = cx + (r * 0.65) * math.cos(mid_angle)
             ly = cy + (r * 0.65) * math.sin(mid_angle)
             pct = value / total * 100
-            if pct >= 5:
-                self.create_text(
-                    lx, ly,
-                    text=f"{pct:.0f}%",
-                    fill="white",
-                    font=("Helvetica", 9, "bold"),
-                )
+
             start += extent
