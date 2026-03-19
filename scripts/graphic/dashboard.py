@@ -182,7 +182,7 @@ class Dashboard(ctk.CTkFrame):
                          height=280).pack(fill="x", padx=0, pady=12)
         else:
             ctk.CTkLabel(chart_outer,
-                         text="Aucune operation enregistree pour le moment.",
+                         text="Pas assez de donnée pour une courbe de tendance.",
                          font=ctk.CTkFont(size=13),
                          text_color="gray").pack(pady=40)
  

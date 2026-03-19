@@ -152,8 +152,8 @@ class ReleveView(ctk.CTkFrame):
         data = self._get_filtered_sorted()
         self.count_label.configure(text=f"{len(data)} transaction(s) trouvée(s)")
 
-        cols   = ["Date", "Description", "Catégorie", "Type", "Montant"]
-        widths = [90, 240, 110, 80, 90]
+        cols   = ["Référence", "Date", "Description", "Catégorie", "Type", "Montant"]
+        widths = [120, 90, 240, 110, 80, 90]
 
         header = tk.Frame(self.table_container, bg=col("header"))
         header.pack(fill="x", padx=2, pady=(2, 0))
@@ -181,13 +181,15 @@ class ReleveView(ctk.CTkFrame):
                          width=w // 7, anchor=align,
                          pady=8, padx=6).pack(side="left")
 
-            cell(t["date"],        widths[0])
-            cell(t["description"], widths[1], align="w")
-            cell(t["categorie"],   widths[2])
-            cell(t["type"],        widths[3],
-                 fg=col("credit") if t["type"] == "Crédit" else col("debit"))
-            cell(f"{sign}{t['montant']:,.2f} €", widths[4],
-                 fg=col("credit") if t["montant"] >= 0 else col("debit"))
+            cell(t["reference"],   widths[0], align="w")
+            cell(t["date"],        widths[1])
+            cell(t["description"], widths[2], align="w")
+            cell(t["categorie"],   widths[3])
+            cell(t["type"],        widths[4],
+                fg=col("credit") if t["type"] == "Crédit" else col("debit"))
+            cell(f"{sign}{t['montant']:,.2f} €", widths[5],
+                fg=col("credit") if t["montant"] >= 0 else col("debit"))
+
 
             tk.Frame(self.table_container, bg="#2d3a3a", height=1).pack(fill="x", padx=2)
 

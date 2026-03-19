@@ -1,8 +1,17 @@
 import random
 from datetime import datetime, timedelta
 from scripts.logic.database_connection import get_connection
+import hashlib
 
 DB_NAME = "budget_buddy"
+
+
+def generate_reference(description, amount, account_id, op_date):
+    """Génère une référence courte et unique pour une opération."""
+    base = f"{description}{amount}{account_id}{op_date}"
+    hash_part = hashlib.sha1(base.encode()).hexdigest()[:7].upper()
+    prefix = ''.join(c for c in description.upper() if c.isalnum())[:3]
+    return f"{prefix}-{hash_part}"
 
 def get_type_id(cursor, label):
     """Return the OperationType.id matching the given label."""
@@ -32,26 +41,28 @@ def date_in_month(year, month, day=None):
 
 def insert_operation(cursor, account_id, amount, description,
                      type_label, category_label, op_date):
-    """Insert a single operation row with an explicit date.
+    """Insert a single operation row with an explicit date."""
 
-    Args:
-        cursor:         Active MySQL cursor.
-        account_id:     Target account ID.
-        amount:         Positive for deposits, negative for withdrawals.
-        description:    Human-readable label for the operation.
-        type_label:     Must match an existing OperationType.label.
-        category_label: Must match an existing OperationCategory.label.
-        op_date:        datetime object — sets the operation date precisely.
-    """
     type_id     = get_type_id(cursor, type_label)
     category_id = get_category_id(cursor, category_label)
+
+    reference = generate_reference(description, amount, account_id, op_date)
 
     cursor.execute("""
         INSERT INTO Operation
             (account_id, destination_account_id, amount, description,
-             type_id, date, category_id)
-        VALUES (%s, NULL, %s, %s, %s, %s, %s)
-    """, (account_id, amount, description, type_id, op_date, category_id))
+             type_id, date, category_id, reference)
+        VALUES (%s, NULL, %s, %s, %s, %s, %s, %s)
+    """, (
+        account_id,
+        amount,
+        description,
+        type_id,
+        op_date,
+        category_id,
+        reference
+    ))
+
 
 def populate_operations_for_account(account_id=1):
     """Insert realistic operations spread over 6 months.

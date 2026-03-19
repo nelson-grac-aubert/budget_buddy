@@ -50,18 +50,19 @@ TABLES["OperationCategory"] = (
 TABLES["Operation"] = (
     """
     CREATE TABLE IF NOT EXISTS Operation (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        account_id INT NOT NULL,
-        destination_account_id INT,
-        amount FLOAT NOT NULL,
-        description VARCHAR(255),
-        type_id INT NOT NULL,
-        date DATETIME NOT NULL,
-        category_id INT,
-        FOREIGN KEY (account_id) REFERENCES Account(id),
-        FOREIGN KEY (destination_account_id) REFERENCES Account(id),
-        FOREIGN KEY (type_id) REFERENCES OperationType(id),
-        FOREIGN KEY (category_id) REFERENCES OperationCategory(id)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    account_id INT NOT NULL,
+    destination_account_id INT,
+    amount FLOAT NOT NULL,
+    description VARCHAR(255),
+    type_id INT NOT NULL,
+    date DATETIME NOT NULL,
+    category_id INT,
+    reference VARCHAR(20) NOT NULL UNIQUE,
+    FOREIGN KEY (account_id) REFERENCES Account(id),
+    FOREIGN KEY (destination_account_id) REFERENCES Account(id),
+    FOREIGN KEY (type_id) REFERENCES OperationType(id),
+    FOREIGN KEY (category_id) REFERENCES OperationCategory(id)
     ) ENGINE=InnoDB;
     """
 )

@@ -186,11 +186,12 @@ def get_transactions_from_db(user_id: int):
 
     query = """
         SELECT 
-            o.date,
-            o.amount,
-            o.description,
-            oc.label AS category,
-            ot.label AS type
+        o.date,
+        o.amount,
+        o.description,
+        oc.label AS category,
+        ot.label AS type,
+        o.reference
         FROM Operation o
         JOIN Account a ON o.account_id = a.id
         JOIN OperationCategory oc ON o.category_id = oc.id
@@ -209,11 +210,12 @@ def get_transactions_from_db(user_id: int):
     formatted = []
     for r in rows:
         formatted.append({
-            "date": r["date"].strftime("%d/%m/%Y"),
-            "description": r["description"],
-            "categorie": r["category"],
-            "type": "Crédit" if r["amount"] >= 0 else "Débit",
-            "montant": float(r["amount"]),
+        "date": r["date"].strftime("%d/%m/%Y"),
+        "description": r["description"],
+        "categorie": r["category"],
+        "type": "Crédit" if r["amount"] >= 0 else "Débit",
+        "montant": float(r["amount"]),
+        "reference": r["reference"],
         })
 
     return formatted
