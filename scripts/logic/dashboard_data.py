@@ -52,11 +52,11 @@ def get_month_operations(user_id: int):
 
 
 def get_month_summary(user_id: int):
-    """Return income and expenses for the current month (transfers excluded)."""
+    """Return income and expenses for the current month (transfers included)."""
     ops = get_month_operations(user_id)
 
-    income   = sum(o["amount"] for o in ops if o["amount"] > 0 and o["type"] != "transfer")
-    expenses = sum(abs(o["amount"]) for o in ops if o["amount"] < 0 and o["type"] != "transfer")
+    income   = sum(o["amount"] for o in ops if o["amount"] > 0)
+    expenses = sum(abs(o["amount"]) for o in ops if o["amount"] < 0)
 
     return income, expenses
 
@@ -115,12 +115,12 @@ def get_transactions_from_db(user_id: int):
         JOIN OperationType ot ON o.type_id = ot.id
         WHERE a.user_id = %s
         ORDER BY o.date DESC
-    """, (user_id,)
+    """
+    cursor.execute(query, (user_id,))
     rows = cursor.fetchall()
     cursor.close()
     connection.close()
 
-    # Adapt to the format expected by Cecilia's "relevé" window
     formatted = []
     for r in rows:
         if r["type"] == "transfer":
@@ -130,13 +130,15 @@ def get_transactions_from_db(user_id: int):
         else:
             type_label = "Débit"
         formatted.append({
-        "date": r["date"].strftime("%d/%m/%Y"),
-        "description": r["description"],
-        "categorie": r["category"],
-        "type": type_label,
-        "montant": float(r["amount"]),
-        "reference": r["reference"],
+            "date":        r["date"].strftime("%d/%m/%Y"),
+            "description": r["description"],
+            "categorie":   r["category"],
+            "type":        type_label,
+            "montant":     float(r["amount"]),
+            "reference":   r["reference"],
         })
+
+    return formatted
 
 
 # ── Admin ──
