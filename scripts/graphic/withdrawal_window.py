@@ -126,5 +126,6 @@ class RetraitWindow(ctk.CTkToplevel):
         if self._on_success:
             self._on_success(
                 "💵 Retrait effectué",
-                f"{montant:.2f} € retiré — {description}",
+                f"{montant:.2f} € retirés\n"
+                f"Description : {description}  |  Catégorie : {categorie}",
             )
