@@ -10,7 +10,7 @@ class VirementWindow(ctk.CTkToplevel):
     def __init__(self, current_user_id, master=None, on_success=None):
         super().__init__(master)
         self.title("Nouveau virement")
-        self.geometry("420x550")
+        self.geometry("420x500")
         self.resizable(False, False)
         self.grab_set()
         self._on_success     = on_success
@@ -91,7 +91,7 @@ class VirementWindow(ctk.CTkToplevel):
 
         ctk.CTkButton(
             btns, text="Confirmer", height=40,
-            fg_color="#7c3aed", hover_color="#6c28d9e7",
+            fg_color="#7c3aed", hover_color="#6d28d9",
             font=ctk.CTkFont(size=13, weight="bold"),
             command=self._handle_virement,
         ).pack(side="left", expand=True)
@@ -145,6 +145,6 @@ class VirementWindow(ctk.CTkToplevel):
         if self._on_success:
             self._on_success(
                 "💸 Virement effectué",
-                f"{montant:.2f} € envoyé à {beneficiaire}"
-                + (f" — {motif}" if motif else ""),
+                f"{montant:.2f} € → compte {beneficiaire}\n"
+                f"Motif : {motif or '—'}  |  Catégorie : {categorie}",
             )

@@ -125,5 +125,6 @@ class DepotWindow(ctk.CTkToplevel):
         if self._on_success:
             self._on_success(
                 "💶 Dépôt effectué",
-                f"{montant:.2f} € déposé — {description}",
+                f"{montant:.2f} € déposés\n"
+                f"Description : {description}  |  Catégorie : {categorie}",
             )
