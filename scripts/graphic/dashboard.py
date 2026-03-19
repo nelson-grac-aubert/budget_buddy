@@ -104,7 +104,7 @@ class Dashboard(ctk.CTkFrame):
         header = ctk.CTkFrame(scroll, fg_color="transparent")
         header.pack(fill="x", pady=(0, 16))
  
-        greeting = f"Welcome, {self._fullname}" if self._fullname else "Welcome"
+        greeting = f"Bienvenue, {self._fullname}" if self._fullname else "Bienvenue"
         ctk.CTkLabel(header, text=greeting,
                      font=ctk.CTkFont(size=26, weight="bold"),
                      anchor="w").pack(side="left")
