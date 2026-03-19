@@ -13,7 +13,7 @@ class AdminDashboard(ctk.CTkFrame):
         self._search    = ctk.StringVar()
         self._build()
 
-    # ── Construction #
+    # ── Construction ──
 
     def _build(self):
         header = ctk.CTkFrame(self, fg_color="transparent")
@@ -76,7 +76,7 @@ class AdminDashboard(ctk.CTkFrame):
 
         self._load()
 
-    # ── Données#
+    # ── Données ──
 
     def _load(self):
         self._accounts = get_all_accounts()
@@ -92,7 +92,7 @@ class AdminDashboard(ctk.CTkFrame):
         data.sort(key=lambda a: a["balance"], reverse=not self._sort_asc)
         return data
 
-    # ── Rendu  #
+    # ── Rendu ──
 
     def _render(self):
         for w in self._table.winfo_children():
@@ -118,12 +118,11 @@ class AdminDashboard(ctk.CTkFrame):
         header = ctk.CTkFrame(self._table, fg_color="#1a7a7a", corner_radius=0)
         header.pack(fill="x", padx=2, pady=(2, 0))
         for col, w in [
-            ("ID user", 60),
-            ("ID compte", 70),
-            ("Nom complet", 150),
-            ("Email", 190),
-            
-            ("Solde", 110),
+            ("ID user",     60),
+            ("ID compte",   70),
+            ("Nom complet", 180),
+            ("Email",       220),
+            ("Solde",       110),
         ]:
             ctk.CTkLabel(
                 header, text=col, width=w, anchor="center",
@@ -139,12 +138,11 @@ class AdminDashboard(ctk.CTkFrame):
         row.pack(fill="x", padx=2)
 
         for text, w, anchor, fg in [
-            (f"#{account['user_id']}",    60,  "center", "#9ca3af"),
-            (f"#{account['account_id']}", 70,  "center", "#6b7280"),
-            (account["fullname"],          150, "w",      "#d1d5db"),
-            (account["email"],             190, "w",      "#9ca3af"),
-            (account.get("created_at", "-"), 80, "center", "#9ca3af"),
-            (f"{sign}{account['balance']:,.2f} €", 110, "e", balance_color),
+            (f"#{account['user_id']}",             60,  "center", "#9ca3af"),
+            (f"#{account['account_id']}",          70,  "center", "#6b7280"),
+            (account["fullname"],                  180, "w",      "#d1d5db"),
+            (account["email"],                     220, "w",      "#9ca3af"),
+            (f"{sign}{account['balance']:,.2f} €", 110, "e",      balance_color),
         ]:
             ctk.CTkLabel(
                 row, text=text, width=w, anchor=anchor,
@@ -172,7 +170,7 @@ class AdminDashboard(ctk.CTkFrame):
             text_color=color, anchor="e",
         ).pack(side="right", padx=16, pady=10)
 
-    # ── Actions  #
+    # ── Actions ──
 
     def _reset(self):
         self._search.set("")

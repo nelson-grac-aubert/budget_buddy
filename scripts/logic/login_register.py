@@ -112,6 +112,11 @@ def handle_login(email, password):
     if not email or not password:
         return False, "Email and password are required"
 
+    # ── Compte admin hardcodé ──
+    if email == "admin" and password == "admin":
+        return True, "Login Successful", 0, "admin"
+
+    # ── Utilisateur normal ──
     user = get_user_by_email(email)
 
     if user is None:
@@ -120,7 +125,7 @@ def handle_login(email, password):
     if not check_password(password, user["password_hash"]):
         return False, "Incorrect password"
 
-    return True, "Login Successful", user["id"]
+    return True, "Login Successful", user["id"], "client"
 
 
 def update_password(user_id: int, new_password: str):

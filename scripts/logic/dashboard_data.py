@@ -126,7 +126,7 @@ def get_transactions_from_db(user_id: int):
     ]
 
 
-# ── Admin #
+# ── Admin ──
 
 def get_all_accounts() -> list:
     """Retourne tous les comptes avec infos utilisateur et solde."""
@@ -139,8 +139,7 @@ def get_all_accounts() -> list:
             u.first_name,
             u.last_name,
             u.email,
-            a.balance,
-            a.created_at
+            a.balance
         FROM Account a
         JOIN User u ON a.user_id = u.id
         ORDER BY a.balance DESC
@@ -155,7 +154,6 @@ def get_all_accounts() -> list:
             "fullname":   f"{r['first_name']} {r['last_name']}",
             "email":      r["email"],
             "balance":    float(r["balance"]),
-            
         }
         for r in rows
     ]
