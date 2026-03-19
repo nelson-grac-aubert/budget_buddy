@@ -107,6 +107,7 @@ class BudgetBuddyApp(ctk.CTk):
             monthly_balance=data["monthly_balance"],
             income=data["income"],
             expenses=data["expenses"],
+            fullname=data["fullname"],
             on_releve=self._show_releve,
             on_notify=self._on_new_notification,
         ).pack(fill="both", expand=True)

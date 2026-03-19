@@ -74,6 +74,7 @@ class Dashboard(ctk.CTkFrame):
                  monthly_balance: dict = None,
                  income: float         = 0.0,
                  expenses: float       = 0.0,
+                 fullname: str         = "",
                  on_releve=None,
                  on_notify=None):
         """Build the main dashboard view for a logged-in user.
@@ -82,22 +83,21 @@ class Dashboard(ctk.CTkFrame):
             current_user_id: ID of the logged-in user (used by child windows).
             master:          Parent tkinter widget.
             balance:         Current account balance fetched from the database.
-            monthly_balance: Dict {month_abbr: total} for the line chart.
+            monthly_balance: Dict {date: cumulative_balance} for the line chart.
                              Can be empty ({}) when the user has no operations yet.
-                             The chart and trend label handle this case gracefully.
             income:          Sum of credits this month (default 0.0).
             expenses:        Sum of debits this month, as a positive value (default 0.0).
+            fullname:        Full name of the logged-in user for the greeting header.
             on_releve:       Callback to navigate to the statement view.
             on_notify:       Callback to push a notification to the sidebar.
         """
         super().__init__(master, corner_radius=0, fg_color="transparent")
 
-        # Store monthly_balance as-is; emptiness is handled per-widget below
         self._monthly_balance = monthly_balance or {}
-
         self._balance         = balance
         self._income          = income
         self._expenses        = expenses
+        self._fullname        = fullname
         self._virement_window = None
         self._retrait_window  = None
         self._depot_window    = None
@@ -113,7 +113,9 @@ class Dashboard(ctk.CTkFrame):
         scroll = ctk.CTkScrollableFrame(self, corner_radius=0, fg_color="transparent")
         scroll.pack(fill="both", expand=True)
 
-        ctk.CTkLabel(scroll, text="Dashboard",
+        # Greeting header — "Welcome Firstname Lastname" or "Welcome" as fallback
+        greeting = f"Welcome, {self._fullname}" if self._fullname else "Welcome"
+        ctk.CTkLabel(scroll, text=greeting,
                      font=ctk.CTkFont(size=26, weight="bold"),
                      anchor="w").pack(anchor="w", pady=(0, 16))
 
