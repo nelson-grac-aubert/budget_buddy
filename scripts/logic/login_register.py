@@ -6,6 +6,7 @@ from mysql.connector import Error
 DB_NAME = "budget_buddy"
 
 def validate_password(password):
+    # Expression régulière ou RegEx : chaine de filtres pour checker des strings
     """Check password strength."""
     pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[,@$!%*?&]).{10,}$'
     return re.match(pattern, password)
