@@ -2,7 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 from datetime import datetime
 from scripts.graphic.transaction_utils import (
-    col, categories, types, tris, parse_date
+    col, categories, categories_depot, types, tris, parse_date
 )
 
 
@@ -63,7 +63,8 @@ class ReleveView(ctk.CTkFrame):
         ctk.CTkLabel(row2, text="Catégorie :", font=ctk.CTkFont(size=12),
                      text_color=col("gray")).pack(side="left", padx=(0, 4))
         self.cat_var = ctk.StringVar(value="Toutes")
-        ctk.CTkOptionMenu(row2, variable=self.cat_var, values=categories(),
+        ctk.CTkOptionMenu(row2, variable=self.cat_var,
+                          values=["Toutes"] + categories_depot() + categories()[1:],
                           width=130, height=32,
                           font=ctk.CTkFont(size=12)).pack(side="left", padx=(0, 12))
 
@@ -97,9 +98,35 @@ class ReleveView(ctk.CTkFrame):
                                         text_color=col("gray"))
         self.count_label.pack(anchor="w", padx=4, pady=(0, 4))
 
-        self.table_container = ctk.CTkScrollableFrame(
-            self, corner_radius=10, fg_color="#111a1a")
-        self.table_container.pack(fill="both", expand=True)
+        # Conteneur avec scroll vertical ET horizontal
+        canvas_frame = tk.Frame(self, bg="#111a1a")
+        canvas_frame.pack(fill="both", expand=True)
+
+        self._canvas = tk.Canvas(canvas_frame, bg="#111a1a", highlightthickness=0)
+        vscroll = tk.Scrollbar(canvas_frame, orient="vertical", command=self._canvas.yview)
+        hscroll = tk.Scrollbar(canvas_frame, orient="horizontal", command=self._canvas.xview)
+
+        self._canvas.configure(yscrollcommand=vscroll.set, xscrollcommand=hscroll.set)
+
+        vscroll.pack(side="right", fill="y")
+        hscroll.pack(side="bottom", fill="x")
+        self._canvas.pack(side="left", fill="both", expand=True)
+
+        self.table_container = tk.Frame(self._canvas, bg="#111a1a")
+        self._canvas_window = self._canvas.create_window((0, 0), window=self.table_container, anchor="nw")
+
+        def _on_frame_configure(e):
+            self._canvas.configure(scrollregion=self._canvas.bbox("all"))
+
+        def _on_canvas_configure(e):
+            self._canvas.itemconfig(self._canvas_window, width=max(e.width, self.table_container.winfo_reqwidth()))
+
+        self.table_container.bind("<Configure>", _on_frame_configure)
+        self._canvas.bind("<Configure>", _on_canvas_configure)
+
+        def _on_mousewheel(e):
+            self._canvas.yview_scroll(int(-1 * (e.delta / 120)), "units")
+        self._canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
         self._refresh()
 
@@ -160,7 +187,7 @@ class ReleveView(ctk.CTkFrame):
         for c, w in zip(cols, widths):
             tk.Label(header, text=c, bg=col("header"), fg=col("head"),
                      font=("Helvetica", 11, "bold"),
-                     width=w // 7, anchor="center", pady=10).pack(side="left")
+                     width=w // 7, anchor="w", pady=10).pack(side="left")
 
         if not data:
             tk.Label(self.table_container,
@@ -175,15 +202,15 @@ class ReleveView(ctk.CTkFrame):
             row.pack(fill="x", padx=2)
             sign = "+" if t["montant"] >= 0 else ""
 
-            def cell(text, w, align="center", fg=None, _bg=bg):
+            def cell(text, w, align="w", fg=None, _bg=bg):
                 tk.Label(row, text=text, bg=_bg, fg=fg or col("normal"),
                          font=("Helvetica", 10),
                          width=w // 7, anchor=align,
                          pady=8, padx=6).pack(side="left")
 
-            cell(t["reference"],   widths[0], align="w")
+            cell(t["reference"],   widths[0])
             cell(t["date"],        widths[1])
-            cell(t["description"], widths[2], align="w")
+            cell(t["description"], widths[2])
             cell(t["categorie"],   widths[3])
             cell(t["type"],        widths[4],
                 fg=col("credit") if t["type"] == "Crédit" else col("debit"))

@@ -91,7 +91,7 @@ class VirementWindow(ctk.CTkToplevel):
 
         ctk.CTkButton(
             btns, text="Confirmer", height=40,
-            fg_color="#7c3aed", hover_color="#6c28d9e7",
+            fg_color="#7c3aed", hover_color="#6d28d9",
             font=ctk.CTkFont(size=13, weight="bold"),
             command=self._handle_virement,
         ).pack(side="left", expand=True)

@@ -189,12 +189,12 @@ def get_transactions_from_db(user_id: int):
         o.date,
         o.amount,
         o.description,
-        oc.label AS category,
+        COALESCE(oc.label, '—') AS category,
         ot.label AS type,
         o.reference
         FROM Operation o
         JOIN Account a ON o.account_id = a.id
-        JOIN OperationCategory oc ON o.category_id = oc.id
+        LEFT JOIN OperationCategory oc ON o.category_id = oc.id
         JOIN OperationType ot ON o.type_id = ot.id
         WHERE a.user_id = %s
         ORDER BY o.date DESC
