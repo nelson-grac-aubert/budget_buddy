@@ -121,3 +121,73 @@ def handle_login(email, password):
         return False, "Incorrect password"
 
     return True, "Login Successful", user["id"]
+
+
+def update_password(user_id: int, new_password: str):
+    """Hash and save a new password for the given user.
+
+    Args:
+        user_id:      ID of the user whose password is being changed.
+        new_password: Plain-text new password (already validated by the UI).
+
+    Returns:
+        (True, "Password updated successfully") on success.
+        (False, error_message) on failure.
+    """
+    if not validate_password(new_password):
+        return False, "Password does not meet strength requirements"
+
+    new_hash = hash_password(new_password)
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(
+            "UPDATE User SET password_hash = %s WHERE id = %s",
+            (new_hash, user_id)
+        )
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return True, "Password updated successfully"
+
+    except Error as err:
+        return False, f"MySQL error: {err}"
+
+
+def update_email(user_id: int, new_email: str):
+    """Save a new email address for the given user.
+
+    Args:
+        user_id:   ID of the user whose email is being changed.
+        new_email: New email address (validated for format before saving).
+
+    Returns:
+        (True, "Email updated successfully") on success.
+        (False, error_message) on failure, including if the email is taken.
+    """
+    if not validate_email(new_email):
+        return False, "Invalid email format"
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(
+            "UPDATE User SET email = %s WHERE id = %s",
+            (new_email, user_id)
+        )
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return True, "Email updated successfully"
+
+    except Error as err:
+        if "Duplicate entry" in str(err):
+            return False, "This email is already in use"
+        return False, f"MySQL error: {err}"
