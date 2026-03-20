@@ -1,18 +1,20 @@
 import customtkinter as ctk
 from scripts.logic.class_withdrawal import Withdrawal
 from scripts.graphic.transaction_utils import categories, get_categorie_id
+from scripts.logic.dashboard_data import get_account_balance
 
 
 class RetraitWindow(ctk.CTkToplevel):
     """Fenêtre modale pour effectuer un retrait."""
 
-    def __init__(self, current_user_id, master=None, on_success=None):
+    def __init__(self, current_user_id, master=None, on_success=None, on_overdraft=None):
         super().__init__(master)
         self.title("Retrait")
         self.geometry("420x470")
         self.resizable(False, False)
         self.grab_set()
         self._on_success     = on_success
+        self._on_overdraft   = on_overdraft
         self.current_user_id = current_user_id
         self._build()
 
@@ -122,7 +124,22 @@ class RetraitWindow(ctk.CTkToplevel):
         )
         retrait.execute()
 
+        # Vérifier le solde avant de fermer et de déclencher les callbacks.
+        # on_overdraft doit être appelé EN PREMIER : il utilise _notify_no_refresh
+        # (sans refresh), donc le Dashboard est encore vivant quand on_success
+        # arrive et déclenche le refresh qui le recrée.
+        new_balance  = get_account_balance(self.current_user_id)
+        is_overdraft = new_balance < 0
+
         self.destroy()
+
+        if is_overdraft and self._on_overdraft:
+            self._on_overdraft(
+                "Solde négatif",
+                f"Votre solde est passé en négatif ({new_balance:,.2f} €). "
+                "Veuillez régulariser votre situation.",
+            )
+
         if self._on_success:
             self._on_success(
                 "💵 Retrait effectué",

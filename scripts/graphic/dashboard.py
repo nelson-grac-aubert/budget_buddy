@@ -102,7 +102,6 @@ class Dashboard(ctk.CTkFrame):
         scroll = ctk.CTkScrollableFrame(self, corner_radius=0, fg_color="transparent")
         scroll.pack(fill="both", expand=True)
  
-        # En-tête : salutation + bouton déconnexion
         header = ctk.CTkFrame(scroll, fg_color="transparent")
         header.pack(fill="x", pady=(0, 16))
  
@@ -188,15 +187,26 @@ class Dashboard(ctk.CTkFrame):
                          font=ctk.CTkFont(size=13),
                          text_color="gray").pack(pady=40)
  
-    # ── Notifications 
- 
+    # ── Notifications
+
     def _notify(self, title: str, message: str, kind: str = "success"):
+        """Toast + ajout à la liste + refresh du dashboard."""
         _Toast(self.winfo_toplevel(), title, message, kind)
         if self._on_notify:
             self._on_notify(title, message, kind)
         if self._on_refresh:
             self._on_refresh()
- 
+
+    def _notify_no_refresh(self, title: str, message: str, kind: str = "warning"):
+        """Toast + ajout à la liste, SANS refresh.
+
+        Utilisé pour les notifications secondaires (ex : découvert) qui doivent
+        s'afficher AVANT que _notify (avec refresh) ne détruise le Dashboard.
+        """
+        _Toast(self.winfo_toplevel(), title, message, kind)
+        if self._on_notify:
+            self._on_notify(title, message, kind)
+
     # ── Déconnexion 
  
     def _logout(self):
@@ -211,6 +221,7 @@ class Dashboard(ctk.CTkFrame):
                 self.current_user_id,
                 master=self,
                 on_success=lambda t, m: self._notify(t, m, kind="success"),
+                on_overdraft=lambda t, m: self._notify_no_refresh(t, m, kind="warning"),
             )
             self._virement_window.focus()
         else:
@@ -222,6 +233,7 @@ class Dashboard(ctk.CTkFrame):
                 self.current_user_id,
                 master=self,
                 on_success=lambda t, m: self._notify(t, m, kind="success"),
+                on_overdraft=lambda t, m: self._notify_no_refresh(t, m, kind="warning"),
             )
             self._retrait_window.focus()
  

@@ -1,18 +1,20 @@
 import customtkinter as ctk
 from scripts.logic.class_transfer import Transfer
 from scripts.graphic.transaction_utils import categories, get_categorie_id
+from scripts.logic.dashboard_data import get_account_balance
 
 
 class VirementWindow(ctk.CTkToplevel):
     """Fenêtre modale pour effectuer un virement."""
 
-    def __init__(self, current_user_id, master=None, on_success=None):
+    def __init__(self, current_user_id, master=None, on_success=None, on_overdraft=None):
         super().__init__(master)
         self.title("Nouveau virement")
         self.geometry("420x550")
         self.resizable(False, False)
         self.grab_set()
         self._on_success     = on_success
+        self._on_overdraft   = on_overdraft
         self.current_user_id = current_user_id
         self._build()
 
@@ -104,7 +106,6 @@ class VirementWindow(ctk.CTkToplevel):
         motif        = self.motif_entry.get().strip()
         categorie    = self.categorie_var.get()
 
-        # Validation
         if not beneficiaire:
             self._show_error("Le bénéficiaire est requis.")
             return
@@ -130,9 +131,25 @@ class VirementWindow(ctk.CTkToplevel):
             destination_account_id=beneficiaire,
         ).execute()
 
+        # Vérifier le solde avant de fermer et de déclencher les callbacks.
+        # on_overdraft doit être appelé EN PREMIER : il utilise _notify_no_refresh
+        # (sans refresh), donc le Dashboard est encore vivant quand on_success
+        # arrive et déclenche le refresh qui le recrée.
+        new_balance  = get_account_balance(self.current_user_id)
+        is_overdraft = new_balance < 0
+
         self.destroy()
+
+        if is_overdraft and self._on_overdraft:
+            self._on_overdraft(
+                "Solde négatif",
+                f"Votre solde est passé en négatif ({new_balance:,.2f} €). "
+                "Veuillez régulariser votre situation.",
+            )
+
         if self._on_success:
             self._on_success(
                 "💸 Virement effectué",
-                f"{montant} € envoyé au compte n° {beneficiaire}" + (f" — {motif}" if motif else ""),
+                f"{montant} € envoyé au compte n° {beneficiaire}"
+                + (f" — {motif}" if motif else ""),
             )
