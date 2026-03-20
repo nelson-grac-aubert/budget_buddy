@@ -221,7 +221,7 @@ class Dashboard(ctk.CTkFrame):
             self._retrait_window = RetraitWindow(
                 self.current_user_id,
                 master=self,
-                on_success=lambda t, m: self._notify(t, m, kind="warning"),
+                on_success=lambda t, m: self._notify(t, m, kind="success"),
             )
             self._retrait_window.focus()
  
@@ -230,6 +230,6 @@ class Dashboard(ctk.CTkFrame):
             self._depot_window = DepotWindow(
                 self.current_user_id,
                 master=self,
-                on_success=lambda t, m: self._notify(t, m, kind="warning"),
+                on_success=lambda t, m: self._notify(t, m, kind="success"),
             )
             self._depot_window.focus()
