@@ -1,3 +1,4 @@
+import tkinter as tk
 import customtkinter as ctk
 
 
@@ -138,66 +139,70 @@ class NotificationView(ctk.CTkFrame):
         bg, accent, ico = _kind_style(notif.get("kind", "info"))
         is_read = notif.get("read", False)
 
-        card = ctk.CTkFrame(self._scroll, corner_radius=12,
-                            fg_color=bg, border_width=1, border_color=accent,
-                            cursor="hand2")
-        card.pack(fill="x", pady=5)
+        # Bordure simulée via frame extérieur couleur accent,
+        # packé directement dans le CTkScrollableFrame (pas d'accès aux internals)
+        border = tk.Frame(self._scroll, bg=accent)
+        border.pack(fill="x", pady=3)
 
-        # Barre colorée à gauche
-        ctk.CTkFrame(card, width=4, fg_color=accent,
-                     corner_radius=0).pack(side="left", fill="y")
+        # Fond intérieur
+        row = tk.Frame(border, bg=bg)
+        row.pack(fill="both", expand=True, padx=1, pady=1)
 
-        # Contenu : icône + titre + heure
-        content = ctk.CTkFrame(card, fg_color="transparent", cursor="hand2")
-        content.pack(side="left", fill="both", expand=True, padx=14, pady=12)
-        content.bind("<Button-1>", lambda e, n=notif: self._open_detail(n))
-
-        title_lbl = ctk.CTkLabel(
-            content,
-            text=f"{ico}  {notif['title']}",
-            font=ctk.CTkFont(size=13, weight="bold"),
-            text_color=accent, anchor="w", cursor="hand2",
-        )
-        title_lbl.pack(side="left")
-        title_lbl.bind("<Button-1>", lambda e, n=notif: self._open_detail(n))
-
-        # Heure
-        ctk.CTkLabel(
-            content,
-            text=notif.get("time", ""),
-            font=ctk.CTkFont(size=11),
-            text_color="#6b7280", anchor="w",
-        ).pack(side="left", padx=(12, 0))
+        # Barre accent à gauche
+        tk.Frame(row, bg=accent, width=4).pack(side="left", fill="y")
 
         # Bouton suppression
-        ctk.CTkButton(
-            card,
-            text="✕", width=28, height=28,
-            corner_radius=14,
-            fg_color="transparent",
-            text_color="#6b7280",
-            hover_color=bg,
-            font=ctk.CTkFont(size=12),
-            command=lambda n=notif, c=card: self._delete(n, c),
-        ).pack(side="right", padx=8, anchor="center")
+        tk.Button(
+            row, text="✕",
+            bg=bg, fg="#6b7280",
+            activebackground=bg, activeforeground="#d1d5db",
+            relief="flat", bd=0,
+            font=("Helvetica", 10),
+            cursor="hand2",
+            command=lambda n=notif, b=border: self._delete(n, b),
+        ).pack(side="right", padx=(0, 8), anchor="center")
 
-        # Pastille "non lu" à droite (visible uniquement si non lue)
+        # Pastille non-lu
         if not is_read:
-            ctk.CTkLabel(
-                card,
-                text="●",
-                font=ctk.CTkFont(size=14),
-                text_color=accent,
-                width=16,
+            tk.Label(
+                row, text="●",
+                bg=bg, fg=accent,
+                font=("Helvetica", 10),
             ).pack(side="right", padx=(0, 4), anchor="center")
+
+        # Contenu : icône + titre + heure
+        content = tk.Frame(row, bg=bg, cursor="hand2")
+        content.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=6)
+
+        title_lbl = tk.Label(
+            content,
+            text=f"{ico}  {notif['title']}",
+            bg=bg, fg=accent,
+            font=("Helvetica", 11, "bold"),
+            anchor="w", cursor="hand2",
+        )
+        title_lbl.pack(side="left")
+
+        time_lbl = tk.Label(
+            content,
+            text=notif.get("time", ""),
+            bg=bg, fg="#6b7280",
+            font=("Helvetica", 10),
+            anchor="w",
+        )
+        time_lbl.pack(side="left", padx=(10, 0))
+
+        # Clic sur toute la zone
+        for widget in (content, title_lbl, time_lbl, row):
+            widget.bind("<Button-1>", lambda e, n=notif: self._open_detail(n))
 
     def _open_detail(self, notif: dict):
         notif["read"] = True
         self._clear()
         _NotifDetail(self, notif, on_back=self._build_list).pack(fill="both", expand=True)
 
-    def _delete(self, notif: dict, card):
+    def _delete(self, notif: dict, border_frame):
         if notif in self._notifications:
             self._notifications.remove(notif)
-        card.destroy()
+        border_frame.destroy()
         self._refresh_count()

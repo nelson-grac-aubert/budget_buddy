@@ -22,6 +22,7 @@ class BudgetBuddyApp(ctk.CTk):
         self.title("Budget Buddy")
         self.geometry("900x620")
         self.minsize(700, 500)
+        self.after(0, self._maximize)
 
         self._account_window = None
         self._notifications  = []
@@ -31,6 +32,12 @@ class BudgetBuddyApp(ctk.CTk):
         self.root_frame.pack(fill="both", expand=True)
 
         self._show_landing()
+
+    def _maximize(self):
+        try:
+            self.state("zoomed")           # Windows & Linux
+        except Exception:
+            self.attributes("-zoomed", True)   # macOS fallback
 
     def _clear_root(self):
         for widget in self.root_frame.winfo_children():
@@ -112,6 +119,7 @@ class BudgetBuddyApp(ctk.CTk):
             income=data["income"],
             expenses=data["expenses"],
             fullname=data["fullname"],
+            sidebar=self.sidebar,
             on_releve=self._show_releve,
             on_notify=self._on_new_notification,
             on_logout=self._logout,
