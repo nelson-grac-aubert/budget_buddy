@@ -136,25 +136,24 @@ class NotificationView(ctk.CTkFrame):
 
     def _add_card(self, notif: dict):
         bg, accent, ico = _kind_style(notif.get("kind", "info"))
+        is_read = notif.get("read", False)
 
         card = ctk.CTkFrame(self._scroll, corner_radius=12,
                             fg_color=bg, border_width=1, border_color=accent,
                             cursor="hand2")
         card.pack(fill="x", pady=5)
 
+        # Barre colorée à gauche
         ctk.CTkFrame(card, width=4, fg_color=accent,
                      corner_radius=0).pack(side="left", fill="y")
 
+        # Contenu : icône + titre + heure
         content = ctk.CTkFrame(card, fg_color="transparent", cursor="hand2")
         content.pack(side="left", fill="both", expand=True, padx=14, pady=12)
         content.bind("<Button-1>", lambda e, n=notif: self._open_detail(n))
 
-        header = ctk.CTkFrame(content, fg_color="transparent")
-        header.pack(fill="x")
-        header.bind("<Button-1>", lambda e, n=notif: self._open_detail(n))
-
         title_lbl = ctk.CTkLabel(
-            header,
+            content,
             text=f"{ico}  {notif['title']}",
             font=ctk.CTkFont(size=13, weight="bold"),
             text_color=accent, anchor="w", cursor="hand2",
@@ -162,23 +161,15 @@ class NotificationView(ctk.CTkFrame):
         title_lbl.pack(side="left")
         title_lbl.bind("<Button-1>", lambda e, n=notif: self._open_detail(n))
 
+        # Heure
         ctk.CTkLabel(
-            header,
+            content,
             text=notif.get("time", ""),
             font=ctk.CTkFont(size=11),
-            text_color="#6b7280", anchor="e",
-        ).pack(side="right")
+            text_color="#6b7280", anchor="w",
+        ).pack(side="left", padx=(12, 0))
 
-        msg_lbl = ctk.CTkLabel(
-            content,
-            text=notif["message"],
-            font=ctk.CTkFont(size=12),
-            text_color="#d1d5db", anchor="w",
-            wraplength=440, justify="left", cursor="hand2",
-        )
-        msg_lbl.pack(anchor="w", pady=(4, 0))
-        msg_lbl.bind("<Button-1>", lambda e, n=notif: self._open_detail(n))
-
+        # Bouton suppression
         ctk.CTkButton(
             card,
             text="✕", width=28, height=28,
@@ -188,7 +179,17 @@ class NotificationView(ctk.CTkFrame):
             hover_color=bg,
             font=ctk.CTkFont(size=12),
             command=lambda n=notif, c=card: self._delete(n, c),
-        ).pack(side="right", padx=8, pady=8, anchor="n")
+        ).pack(side="right", padx=8, anchor="center")
+
+        # Pastille "non lu" à droite (visible uniquement si non lue)
+        if not is_read:
+            ctk.CTkLabel(
+                card,
+                text="●",
+                font=ctk.CTkFont(size=14),
+                text_color=accent,
+                width=16,
+            ).pack(side="right", padx=(0, 4), anchor="center")
 
     def _open_detail(self, notif: dict):
         notif["read"] = True
