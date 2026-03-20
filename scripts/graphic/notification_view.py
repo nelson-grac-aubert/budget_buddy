@@ -77,6 +77,19 @@ class NotificationView(ctk.CTkFrame):
         for w in self.winfo_children():
             w.destroy()
 
+    def _unread_count(self) -> int:
+        return len([n for n in self._notifications if not n.get("read")])
+
+    def _refresh_count(self):
+        count = self._unread_count()
+        if count:
+            self._unread_label.configure(
+                text=f"{count} non lue{'s' if count > 1 else ''}",
+                fg_color="#3b1a1a",
+            )
+        else:
+            self._unread_label.configure(text="", fg_color="transparent")
+
     def _build_list(self):
         self._clear()
 
@@ -90,17 +103,17 @@ class NotificationView(ctk.CTkFrame):
             anchor="w",
         ).pack(side="left")
 
-        count = len(self._notifications)
-        if count:
-            ctk.CTkLabel(
-                top,
-                text=f"{count} non lue{'s' if count > 1 else ''}",
-                font=ctk.CTkFont(size=12),
-                text_color="#ef4444",
-                fg_color="#3b1a1a",
-                corner_radius=8,
-                padx=8, pady=2,
-            ).pack(side="left", padx=12)
+        self._unread_label = ctk.CTkLabel(
+            top,
+            text="",
+            font=ctk.CTkFont(size=12),
+            text_color="#ef4444",
+            fg_color="#3b1a1a",
+            corner_radius=8,
+            padx=8, pady=2,
+        )
+        self._unread_label.pack(side="left", padx=12)
+        self._refresh_count()
 
         self._scroll = ctk.CTkScrollableFrame(self, corner_radius=0, fg_color="transparent")
         self._scroll.pack(fill="both", expand=True)
@@ -178,6 +191,7 @@ class NotificationView(ctk.CTkFrame):
         ).pack(side="right", padx=8, pady=8, anchor="n")
 
     def _open_detail(self, notif: dict):
+        notif["read"] = True
         self._clear()
         _NotifDetail(self, notif, on_back=self._build_list).pack(fill="both", expand=True)
 
@@ -185,3 +199,4 @@ class NotificationView(ctk.CTkFrame):
         if notif in self._notifications:
             self._notifications.remove(notif)
         card.destroy()
+        self._refresh_count()
