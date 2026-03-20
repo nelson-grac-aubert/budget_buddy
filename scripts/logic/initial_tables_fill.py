@@ -1,7 +1,7 @@
 OPERATION_TYPES = [
     "deposit",
     "withdrawal",
-    "transfer"
+    "transfer",
 ]
 
 OPERATION_CATEGORIES = [
@@ -15,42 +15,39 @@ OPERATION_CATEGORIES = [
     "Santé",
     "Loisirs",
     "Salaire",
-    "Revenus"
+    "Revenus",
 ]
 
 NOTIFICATION_TYPES = [
     "overdraft",
     "suspect activity",
     "big deposit",
-    "big withdrawal"
+    "big withdrawal",
 ]
 
 
-def insert_if_not_exists(cursor, table, column, value):
+def _insert_if_absent(cursor, table: str, column: str, value: str) -> None:
+    """Insert a row into table only if no row with that column value exists."""
     cursor.execute(f"SELECT id FROM {table} WHERE {column} = %s", (value,))
-    result = cursor.fetchone()
-
-    if result is None:
-        cursor.execute(
-            f"INSERT INTO {table} ({column}) VALUES (%s)",
-            (value,)
-        )
-        print(f"[OK] Inserted into {table}: {value}")
-    else:
-        print(f"[SKIP] Already exists in {table}: {value}")
+    if cursor.fetchone() is None:
+        cursor.execute(f"INSERT INTO {table} ({column}) VALUES (%s)", (value,))
 
 
-def seed_initial_data(connection):
+def seed_initial_data(connection) -> None:
+    """Populate reference tables with their seed rows.
+
+    Safe to call multiple times — rows are only inserted when absent.
+    """
     cursor = connection.cursor()
 
     for label in OPERATION_TYPES:
-        insert_if_not_exists(cursor, "OperationType", "label", label)
+        _insert_if_absent(cursor, "OperationType", "label", label)
 
     for label in OPERATION_CATEGORIES:
-        insert_if_not_exists(cursor, "OperationCategory", "label", label)
+        _insert_if_absent(cursor, "OperationCategory", "label", label)
 
     for label in NOTIFICATION_TYPES:
-        insert_if_not_exists(cursor, "NotificationType", "label", label)
+        _insert_if_absent(cursor, "NotificationType", "label", label)
 
     connection.commit()
     cursor.close()
