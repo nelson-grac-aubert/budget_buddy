@@ -1,7 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
 from datetime import datetime
-from scripts.graphic.transaction_utils import (
+from scripts.graphic.modules.transaction_utils import (
     col, categories, categories_depot, types, tris, parse_date
 )
 

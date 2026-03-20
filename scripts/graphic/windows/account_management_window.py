@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from scripts.logic.login_register import update_password, update_email, validate_email
+from scripts.logic.app.login_register import update_password, update_email, validate_email
 
 
 class AccountManagementWindow(ctk.CTkToplevel):

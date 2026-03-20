@@ -1,7 +1,7 @@
 import mysql.connector
 
-from scripts.logic.create_database import DB_NAME
-from scripts.logic.initialize import initialize_all
+from scripts.logic.database.create_database import DB_NAME
+from scripts.logic.database.initialize import initialize_all
 
 
 def dump_database(host="127.0.0.1", user="budget_buddy_test", password="strong_password_budget_buddies"):

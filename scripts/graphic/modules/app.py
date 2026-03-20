@@ -1,19 +1,19 @@
 import customtkinter as ctk
 from datetime import datetime
 
-from scripts.graphic.sidebar import Sidebar
-from scripts.graphic.dashboard import Dashboard
+from scripts.graphic.modules.sidebar import Sidebar
+from scripts.graphic.windows.dashboard import Dashboard
 from scripts.graphic.admin.dashboard_admin import AdminDashboard
-from scripts.graphic.account_management_window import AccountManagementWindow
-from scripts.graphic.register_window import RegisterWindow
-from scripts.graphic.login_window import HomeWindow
-from scripts.graphic.menu_home import HomeMenu
-from scripts.graphic.transaction_window import TransactionWindow
-from scripts.graphic.releve_view import ReleveView
-from scripts.graphic.notification_view import NotificationView
+from scripts.graphic.windows.account_management_window import AccountManagementWindow
+from scripts.graphic.windows.register_window import RegisterWindow
+from scripts.graphic.windows.login_window import HomeWindow
+from scripts.graphic.windows.menu_home import HomeMenu
+from scripts.graphic.windows.transaction_window import TransactionWindow
+from scripts.graphic.windows.releve_view import ReleveView
+from scripts.graphic.windows.notification_view import NotificationView
 
-from scripts.logic.dashboard_data import get_dashboard_data
-from scripts.logic.dashboard_data import get_transactions_from_db
+from scripts.logic.app.dashboard_data import get_dashboard_data
+from scripts.logic.app.dashboard_data import get_transactions_from_db
 
 
 class BudgetBuddyApp(ctk.CTk):

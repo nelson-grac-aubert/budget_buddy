@@ -1,9 +1,9 @@
 import tkinter as tk
 import customtkinter as ctk
-from scripts.graphic.balance_chart import BalanceChart
-from scripts.graphic.transfer_window import VirementWindow
-from scripts.graphic.withdrawal_window import RetraitWindow
-from scripts.graphic.depot_window import DepotWindow
+from scripts.graphic.charts.balance_chart import BalanceChart
+from scripts.graphic.windows.transfer_window import VirementWindow
+from scripts.graphic.windows.withdrawal_window import RetraitWindow
+from scripts.graphic.windows.deposit_window import DepotWindow
 
 
 # ── Toast de notification

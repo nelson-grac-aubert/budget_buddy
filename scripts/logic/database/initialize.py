@@ -1,6 +1,6 @@
 import mysql.connector
-from scripts.logic.create_database import initialize_database, DB_NAME
-from scripts.logic.initial_tables_fill import seed_initial_data
+from scripts.logic.database.create_database import initialize_database, DB_NAME
+from scripts.logic.database.initial_tables_fill import seed_initial_data
 
 
 # Credentials of the dedicated app user — same as database_connection.py.

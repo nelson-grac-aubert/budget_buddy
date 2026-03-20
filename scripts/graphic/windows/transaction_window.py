@@ -1,8 +1,8 @@
 import tkinter as tk
 import customtkinter as ctk
-from scripts.graphic.pie_chart import PieChart
-from scripts.graphic.transaction_utils import (pie_color, parse_date, col)
-from scripts.logic.dashboard_data import get_transactions_from_db
+from scripts.graphic.charts.pie_chart import PieChart
+from scripts.graphic.modules.transaction_utils import (pie_color, parse_date, col)
+from scripts.logic.app.dashboard_data import get_transactions_from_db
 
 
 class TransactionWindow(ctk.CTkFrame):

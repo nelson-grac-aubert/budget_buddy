@@ -1,4 +1,4 @@
-from scripts.logic.database_connection import get_connection
+from scripts.logic.database.database_connection import get_connection
 from datetime import datetime
 
 

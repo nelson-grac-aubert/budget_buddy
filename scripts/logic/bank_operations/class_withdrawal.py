@@ -1,4 +1,4 @@
-from scripts.logic.class_bank_operation import BankOperation
+from scripts.logic.bank_operations.class_bank_operation import BankOperation
 
 class Withdrawal(BankOperation):
     def execute(self):

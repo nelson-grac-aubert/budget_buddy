@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from scripts.logic.login_register import handle_register   # ← liaison interne
+from scripts.logic.app.login_register import handle_register   # ← liaison interne
 
 
 class RegisterWindow(ctk.CTkFrame):

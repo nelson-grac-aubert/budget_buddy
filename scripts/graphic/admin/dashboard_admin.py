@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from scripts.logic.dashboard_data import get_all_accounts
+from scripts.logic.app.dashboard_data import get_all_accounts
 
 
 class AdminDashboard(ctk.CTkFrame):

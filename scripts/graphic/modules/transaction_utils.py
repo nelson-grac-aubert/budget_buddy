@@ -1,5 +1,5 @@
 from datetime import datetime
-from scripts.logic.database_connection import get_connection
+from scripts.logic.database.database_connection import get_connection
 
 def pie_color(categorie: str) -> str:
     return {

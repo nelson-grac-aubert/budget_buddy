@@ -1,6 +1,6 @@
 import random
 from datetime import datetime, timedelta
-from scripts.logic.database_connection import get_connection
+from scripts.logic.database.database_connection import get_connection
 import hashlib
 
 DB_NAME = "budget_buddy"

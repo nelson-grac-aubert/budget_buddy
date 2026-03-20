@@ -1,7 +1,7 @@
 import sys
-from scripts.graphic.config import apply_appearance
-from scripts.graphic.app import BudgetBuddyApp
-from scripts.logic.initialize import initialize_all
+from scripts.graphic.modules.config import apply_appearance
+from scripts.graphic.modules.app import BudgetBuddyApp
+from scripts.logic.database.initialize import initialize_all
 
 
 if __name__ == "__main__":

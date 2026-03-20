@@ -1,6 +1,6 @@
 import customtkinter as ctk
-from scripts.logic.class_deposit import Deposit
-from scripts.graphic.transaction_utils import categories_depot, get_categorie_id
+from scripts.logic.bank_operations.class_deposit import Deposit
+from scripts.graphic.modules.transaction_utils import categories_depot, get_categorie_id
 
 
 class DepotWindow(ctk.CTkToplevel):
