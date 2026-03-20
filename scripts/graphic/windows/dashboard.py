@@ -1,123 +1,11 @@
-import tkinter as tk
 import customtkinter as ctk
+
 from scripts.graphic.charts.balance_chart import BalanceChart
+from scripts.graphic.modules.toast import Toast
 from scripts.graphic.windows.transfer_window import VirementWindow
 from scripts.graphic.windows.withdrawal_window import RetraitWindow
 from scripts.graphic.windows.deposit_window import DepotWindow
 
-
-# ── Toast de notification
-
-class _Toast(ctk.CTkToplevel):
-    """Notification flottante qui disparaît automatiquement après 4 s.
-
-    Les toasts s'empilent verticalement à partir d'une position d'ancrage
-    transmise à la construction (x, y_start). Chaque nouveau toast s'affiche
-    sous le précédent, sans jamais se superposer.
-    """
-
-    _WIDTH  = 340  # largeur fixe (px)
-    _GAP    = 6    # espace entre deux toasts empilés (px)
-
-    _stack: list = []
-
-    def __init__(self, master, title: str, message: str, kind: str = "success",
-                 anchor_x: int = None, anchor_y: int = None):
-        super().__init__(master)
-        self.overrideredirect(True)
-        self.attributes("-topmost", True)
-        self.resizable(False, False)
-
-        self._anchor_x = anchor_x
-        self._anchor_y = anchor_y
-
-        palette = {
-            "success": ("#14532d", "#22c55e"),
-            "warning": ("#78350f", "#f59e0b"),
-            "error":   ("#7f1d1d", "#ef4444"),
-            "info":    ("#1e3a5f", "#3b82f6"),
-        }
-        bg, accent = palette.get(kind, palette["success"])
-
-        self.geometry(f"{self._WIDTH}x1")
-        self.configure(bg=bg)
-
-        outer = tk.Frame(self, bg=accent)
-        outer.pack(fill="both", expand=True, padx=1, pady=1)
-
-        inner = tk.Frame(outer, bg=bg)
-        inner.pack(fill="both", expand=True)
-
-        tk.Frame(inner, bg=accent, width=4).pack(side="left", fill="y")
-
-        tk.Button(
-            inner, text="✕",
-            bg=bg, fg="#9ca3af",
-            activebackground=bg, activeforeground="#d1d5db",
-            relief="flat", bd=0,
-            font=("Helvetica", 10),
-            cursor="hand2",
-            command=self._close,
-        ).pack(side="right", padx=(0, 8), anchor="center")
-
-        text_area = tk.Frame(inner, bg=bg)
-        text_area.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=8)
-
-        _wrap = self._WIDTH - 4 - 10 - 36
-
-        tk.Label(
-            text_area, text=title,
-            bg=bg, fg=accent,
-            font=("Helvetica", 11, "bold"),
-            anchor="w", justify="left",
-            wraplength=_wrap,
-        ).pack(anchor="w", fill="x")
-
-        tk.Label(
-            text_area, text=message,
-            bg=bg, fg="#d1d5db",
-            font=("Helvetica", 10),
-            anchor="w", justify="left",
-            wraplength=_wrap,
-        ).pack(anchor="w", fill="x", pady=(2, 0))
-
-        self.update_idletasks()
-        self._h = self.winfo_reqheight()
-        _Toast._stack.append(self)
-        self._position()
-        self._job = self.after(4000, self._close)
-
-    def _position(self):
-        x = self._anchor_x if self._anchor_x is not None else (
-            self.winfo_screenwidth() - self._WIDTH - 20
-        )
-        y_start = self._anchor_y if self._anchor_y is not None else (
-            self.winfo_screenheight() - 60
-        )
-
-        # Empilement vers le bas à partir de y_start
-        y = y_start
-        for toast in _Toast._stack:
-            if toast is self:
-                break
-            y += toast._h + self._GAP
-
-        self.geometry(f"{self._WIDTH}x{self._h}+{x}+{y}")
-
-    def _close(self):
-        try:
-            self.after_cancel(self._job)
-        except Exception:
-            pass
-        if self in _Toast._stack:
-            idx = _Toast._stack.index(self)
-            _Toast._stack.remove(self)
-            for toast in _Toast._stack[idx:]:
-                toast._position()
-        self.destroy()
-
-
-# ── Dashboard
 
 class Dashboard(ctk.CTkFrame):
     def __init__(self, current_user_id, master, balance,
@@ -137,8 +25,8 @@ class Dashboard(ctk.CTkFrame):
         self._income          = income
         self._expenses        = expenses
         self._fullname        = fullname
-        self._sidebar         = sidebar      # référence à la sidebar pour ancrer les toasts
-        self._chart_outer     = None         # rempli dans _build_chart_section
+        self._sidebar         = sidebar
+        self._chart_outer     = None
         self._virement_window = None
         self._retrait_window  = None
         self._depot_window    = None
@@ -243,22 +131,16 @@ class Dashboard(ctk.CTkFrame):
     # ── Calcul de la position d'ancrage des toasts
 
     def _toast_anchor(self):
-        """Retourne (x, y) pour ancrer le toast :
-        - x = bord droit de la sidebar (+ marge)
-        - y = bas du graphique (+ marge)
-        Utilise after() pour s'assurer que les widgets sont rendus.
-        """
+        """Retourne (x, y) : bord droit de la sidebar, bas du graphique."""
         self.update_idletasks()
 
-        if self._sidebar is not None:
-            x = self._sidebar.winfo_rootx() + self._sidebar.winfo_width() + 10
-        else:
-            x = self.winfo_screenwidth() - _Toast._WIDTH - 20
+        x = (self._sidebar.winfo_rootx() + self._sidebar.winfo_width() + 10
+             if self._sidebar is not None
+             else self.winfo_screenwidth() - Toast._WIDTH - 20)
 
-        if self._chart_outer is not None:
-            y = self._chart_outer.winfo_rooty() + self._chart_outer.winfo_height() + 10
-        else:
-            y = self.winfo_screenheight() - 200
+        y = (self._chart_outer.winfo_rooty() + self._chart_outer.winfo_height() + 10
+             if self._chart_outer is not None
+             else self.winfo_screenheight() - 200)
 
         return x, y
 
@@ -267,7 +149,7 @@ class Dashboard(ctk.CTkFrame):
     def _notify(self, title: str, message: str, kind: str = "success"):
         """Toast + ajout à la liste + refresh du dashboard."""
         x, y = self._toast_anchor()
-        _Toast(self.winfo_toplevel(), title, message, kind, anchor_x=x, anchor_y=y)
+        Toast(self.winfo_toplevel(), title, message, kind, anchor_x=x, anchor_y=y)
         if self._on_notify:
             self._on_notify(title, message, kind)
         if self._on_refresh:
@@ -276,7 +158,7 @@ class Dashboard(ctk.CTkFrame):
     def _notify_no_refresh(self, title: str, message: str, kind: str = "warning"):
         """Toast + ajout à la liste, SANS refresh."""
         x, y = self._toast_anchor()
-        _Toast(self.winfo_toplevel(), title, message, kind, anchor_x=x, anchor_y=y)
+        Toast(self.winfo_toplevel(), title, message, kind, anchor_x=x, anchor_y=y)
         if self._on_notify:
             self._on_notify(title, message, kind)
 
