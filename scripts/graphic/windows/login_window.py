@@ -3,7 +3,7 @@ from scripts.logic.app.login_register import handle_login
 
 
 class HomeWindow(ctk.CTkFrame):
-    """Formulaire de connexion."""
+    """login form."""
 
     def __init__(self, master, on_login, on_register, on_back):
         super().__init__(master, corner_radius=0, fg_color="transparent")
@@ -39,7 +39,7 @@ class HomeWindow(ctk.CTkFrame):
         self.email_entry.pack(fill="x", padx=32, pady=(4, 14))
         
 
-        # Mot de passe
+        # password
         ctk.CTkLabel(container, text="Mot de passe", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=32)
 
@@ -62,7 +62,7 @@ class HomeWindow(ctk.CTkFrame):
         )
         self.eye_btn.pack(side="left", padx=(4, 0))
 
-        # Label d'erreur
+        # error label
         self.error_label = ctk.CTkLabel(
             container, text="",
             font=ctk.CTkFont(size=11),
@@ -71,7 +71,7 @@ class HomeWindow(ctk.CTkFrame):
         )
         self.error_label.pack(fill="x", padx=32, pady=(0, 16))
 
-        # Connexion
+        # login
         ctk.CTkButton(
             container,
             text="Se connecter",
@@ -111,12 +111,12 @@ class HomeWindow(ctk.CTkFrame):
 
         result = handle_login(email, password)
 
-        # Échec — 2 valeurs
+        # Failure response — returns 2 values
         if not result[0]:
             self.error_label.configure(text=f"⚠  {result[1]}")
             return
 
-        # Succès — 4 valeurs : True, message, user_id, user_type
+        # Success — 4 values: True, message, user_id, user_type
         _, _, user_id, user_type = result
 
         self.error_label.configure(text="")

@@ -12,7 +12,7 @@ def _kind_style(kind: str):
 
 
 class _NotifDetail(ctk.CTkFrame):
-    """Vue détail d'une notification."""
+    """Notification detail view."""
 
     def __init__(self, master, notif: dict, on_back):
         super().__init__(master, corner_radius=0, fg_color="transparent")
@@ -67,7 +67,7 @@ class _NotifDetail(ctk.CTkFrame):
 
 
 class NotificationView(ctk.CTkFrame):
-    """Vue liste + détail des notifications."""
+    """Notifications list and detail view."""
 
     def __init__(self, master, notifications: list):
         super().__init__(master, corner_radius=0, fg_color="transparent")
@@ -139,19 +139,19 @@ class NotificationView(ctk.CTkFrame):
         bg, accent, ico = _kind_style(notif.get("kind", "info"))
         is_read = notif.get("read", False)
 
-        # Bordure simulée via frame extérieur couleur accent,
-        # packé directement dans le CTkScrollableFrame (pas d'accès aux internals)
+        # Simulated border using an outer frame with accent color,
+        # packed directly into the CTkScrollableFrame (no access to internals)
         border = tk.Frame(self._scroll, bg=accent)
         border.pack(fill="x", pady=3)
 
-        # Fond intérieur
+        # Inner background
         row = tk.Frame(border, bg=bg)
         row.pack(fill="both", expand=True, padx=1, pady=1)
 
-        # Barre accent à gauche
+        # Accent bar on the left
         tk.Frame(row, bg=accent, width=4).pack(side="left", fill="y")
 
-        # Bouton suppression
+        # supress button
         tk.Button(
             row, text="✕",
             bg=bg, fg="#6b7280",
@@ -162,7 +162,7 @@ class NotificationView(ctk.CTkFrame):
             command=lambda n=notif, b=border: self._delete(n, b),
         ).pack(side="right", padx=(0, 8), anchor="center")
 
-        # Pastille non-lu
+        # Unread badge
         if not is_read:
             tk.Label(
                 row, text="●",
@@ -170,7 +170,7 @@ class NotificationView(ctk.CTkFrame):
                 font=("Helvetica", 10),
             ).pack(side="right", padx=(0, 4), anchor="center")
 
-        # Contenu : icône + titre + heure
+        # Content: icon + title + time
         content = tk.Frame(row, bg=bg, cursor="hand2")
         content.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=6)
 
@@ -192,7 +192,7 @@ class NotificationView(ctk.CTkFrame):
         )
         time_lbl.pack(side="left", padx=(10, 0))
 
-        # Clic sur toute la zone
+        # Clickable over the entire area
         for widget in (content, title_lbl, time_lbl, row):
             widget.bind("<Button-1>", lambda e, n=notif: self._open_detail(n))
 

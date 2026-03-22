@@ -68,7 +68,7 @@ class Dashboard(ctk.CTkFrame):
         self._build_action_buttons(scroll)
         self._build_chart_section(scroll)
 
-    # ── Cartes résumé
+    # ── Summary cards
 
     def _build_summary_cards(self, parent):
         cards_frame = ctk.CTkFrame(parent, fg_color="transparent")
@@ -88,7 +88,7 @@ class Dashboard(ctk.CTkFrame):
                          font=ctk.CTkFont(size=20, weight="bold"), text_color=color
                          ).pack(anchor="w", padx=14, pady=(0, 12))
 
-    # ── Boutons d'action
+    # ── action buttons
 
     def _build_action_buttons(self, parent):
         actions_frame = ctk.CTkFrame(parent, fg_color="transparent")
@@ -111,7 +111,7 @@ class Dashboard(ctk.CTkFrame):
                          font=ctk.CTkFont(size=15),
                          text_color="gray").pack(pady=(6, 0))
 
-    # ── Graphique
+    # ── Graphic
 
     def _build_chart_section(self, parent):
         self._chart_outer = ctk.CTkFrame(parent, corner_radius=14, fg_color="#1e1e2e")
@@ -128,7 +128,7 @@ class Dashboard(ctk.CTkFrame):
                          font=ctk.CTkFont(size=13),
                          text_color="gray").pack(pady=40)
 
-    # ── Calcul de la position d'ancrage des toasts
+    # ── Calculate the anchor position for toasts
 
     def _toast_anchor(self):
         """Retourne (x, y) : bord droit de la sidebar, bas du graphique."""
@@ -162,13 +162,13 @@ class Dashboard(ctk.CTkFrame):
         if self._on_notify:
             self._on_notify(title, message, kind)
 
-    # ── Déconnexion
+    # ── Logout
 
     def _logout(self):
         if self._on_logout:
             self._on_logout()
 
-    # ── Fenêtres secondaires
+    # ── second windows
 
     def _open_virement(self):
         if self._virement_window is None or not self._virement_window.winfo_exists():

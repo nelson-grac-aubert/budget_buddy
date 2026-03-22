@@ -2,7 +2,7 @@ import customtkinter as ctk
 
 
 class HomeMenu(ctk.CTkFrame):
-    """Page d'accueil — landing page avec boutons Login et Register."""
+    """home page — landing page with Login and Register buttons."""
 
     def __init__(self, master, on_login, on_register):
         super().__init__(master, corner_radius=0, fg_color="transparent")

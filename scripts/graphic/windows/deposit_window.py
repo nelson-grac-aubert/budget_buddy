@@ -4,7 +4,7 @@ from scripts.graphic.modules.transaction_utils import categories_depot, get_cate
 
 
 class DepotWindow(ctk.CTkToplevel):
-    """Fenêtre modale pour effectuer un dépôt."""
+    """Modal window for performing a deposit."""
 
     def __init__(self, current_user_id, master=None, on_success=None):
         super().__init__(master)
@@ -33,21 +33,21 @@ class DepotWindow(ctk.CTkToplevel):
         ctk.CTkFrame(self, height=1, fg_color="#3a3a3a").pack(
             fill="x", padx=30, pady=(0, 20))
 
-        # Description — champ texte libre
+        # Description — free text field
         ctk.CTkLabel(self, text="Description", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.description_entry = ctk.CTkEntry(
             self, placeholder_text="Cadeau de mamie", height=38)
         self.description_entry.pack(fill="x", padx=30, pady=(4, 14))
 
-        # Montant
+        # amount
         ctk.CTkLabel(self, text="Montant (€)", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.montant_entry = ctk.CTkEntry(
             self, placeholder_text="0,00", height=38)
         self.montant_entry.pack(fill="x", padx=30, pady=(4, 14))
 
-        # Catégorie — menu déroulant
+        # Category — dropdown menu
         ctk.CTkLabel(self, text="Catégorie", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         _cats = categories_depot()
@@ -60,7 +60,7 @@ class DepotWindow(ctk.CTkToplevel):
             font=ctk.CTkFont(size=13),
         ).pack(fill="x", padx=30, pady=(4, 6))
 
-        # Label d'erreur
+        # error label
         self.error_label = ctk.CTkLabel(
             self, text="",
             font=ctk.CTkFont(size=11),
@@ -69,7 +69,7 @@ class DepotWindow(ctk.CTkToplevel):
         )
         self.error_label.pack(fill="x", padx=30)
 
-        # Boutons
+        # Buttons
         btns = ctk.CTkFrame(self, fg_color="transparent")
         btns.pack(fill="x", padx=30, pady=(20, 0))
 

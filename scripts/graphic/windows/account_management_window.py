@@ -23,10 +23,10 @@ class AccountManagementWindow(ctk.CTkToplevel):
         self.grab_set()
         self._build_main()
 
-    # ── Alerte ────────────────────────────────────────────────────────────── #
+    # ── Alert ────────────────────────────────────────────────────────────── #
 
     def _show_alert(self, message: str, success: bool = True):
-        """Affiche une alerte modale de succès ou d'erreur."""
+        """Display a modal alert indicating success or error."""
         alert = ctk.CTkToplevel(self)
         alert.title("")
         alert.geometry("340x180")
