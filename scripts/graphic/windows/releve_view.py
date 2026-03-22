@@ -98,7 +98,7 @@ class ReleveView(ctk.CTkFrame):
                                         text_color=col("gray"))
         self.count_label.pack(anchor="w", padx=4, pady=(0, 4))
 
-        # Conteneur avec scroll vertical ET horizontal
+        # Contener with scroll vertical and horizontal
         canvas_frame = tk.Frame(self, bg="#111a1a")
         canvas_frame.pack(fill="both", expand=True)
 

@@ -5,7 +5,7 @@ from scripts.logic.app.dashboard_data import get_account_balance
 
 
 class VirementWindow(ctk.CTkToplevel):
-    """Fenêtre modale pour effectuer un virement."""
+    """Modal window for performing a transfer."""
 
     def __init__(self, current_user_id, master=None, on_success=None, on_overdraft=None):
         super().__init__(master)
@@ -35,28 +35,28 @@ class VirementWindow(ctk.CTkToplevel):
         ctk.CTkFrame(self, height=1, fg_color="#3a3a3a").pack(
             fill="x", padx=30, pady=(0, 20))
 
-        # Bénéficiaire
+        # Beneficiary
         ctk.CTkLabel(self, text="ID du compte du bénéficiaire", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.beneficiaire_entry = ctk.CTkEntry(
             self, placeholder_text="3", height=38)
         self.beneficiaire_entry.pack(fill="x", padx=30, pady=(4, 14))
 
-        # Montant
+        # amount
         ctk.CTkLabel(self, text="Montant (€)", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.montant_entry = ctk.CTkEntry(
             self, placeholder_text="0,00", height=38)
         self.montant_entry.pack(fill="x", padx=30, pady=(4, 14))
 
-        # Motif
+        # pattern
         ctk.CTkLabel(self, text="Motif", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.motif_entry = ctk.CTkEntry(
             self, placeholder_text="Ex : Remboursement loyer", height=38)
         self.motif_entry.pack(fill="x", padx=30, pady=(4, 14))
 
-        # Catégorie
+        # Category
         ctk.CTkLabel(self, text="Catégorie", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.categorie_var = ctk.StringVar(value=categories()[1])
@@ -68,7 +68,7 @@ class VirementWindow(ctk.CTkToplevel):
             font=ctk.CTkFont(size=13),
         ).pack(fill="x", padx=30, pady=(4, 6))
 
-        # Label d'erreur
+        # error label
         self.error_label = ctk.CTkLabel(
             self, text="",
             font=ctk.CTkFont(size=11),
@@ -77,7 +77,7 @@ class VirementWindow(ctk.CTkToplevel):
         )
         self.error_label.pack(fill="x", padx=30, pady=(0, 8))
 
-        # Boutons
+        # Buttons
         btns = ctk.CTkFrame(self, fg_color="transparent")
         btns.pack(fill="x", padx=30, pady=(4, 0))
 
@@ -131,10 +131,10 @@ class VirementWindow(ctk.CTkToplevel):
             destination_account_id=beneficiaire,
         ).execute()
 
-        # Vérifier le solde avant de fermer et de déclencher les callbacks.
-        # on_overdraft doit être appelé EN PREMIER : il utilise _notify_no_refresh
-        # (sans refresh), donc le Dashboard est encore vivant quand on_success
-        # arrive et déclenche le refresh qui le recrée.
+        # Check the balance before closing and triggering callbacks.
+        # on_overdraft must be called FIRST: it uses _notify_no_refresh
+        # (without refresh), so the Dashboard is still active when on_success
+        # runs and triggers the refresh that recreates it.
         new_balance  = get_account_balance(self.current_user_id)
         is_overdraft = new_balance < 0
 

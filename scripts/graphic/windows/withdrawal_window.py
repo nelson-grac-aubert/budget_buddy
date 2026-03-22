@@ -5,7 +5,7 @@ from scripts.logic.app.dashboard_data import get_account_balance
 
 
 class RetraitWindow(ctk.CTkToplevel):
-    """Fenêtre modale pour effectuer un retrait."""
+    """Modal window for performing a withdrawal."""
 
     def __init__(self, current_user_id, master=None, on_success=None, on_overdraft=None):
         super().__init__(master)
@@ -35,14 +35,14 @@ class RetraitWindow(ctk.CTkToplevel):
         ctk.CTkFrame(self, height=1, fg_color="#3a3a3a").pack(
             fill="x", padx=30, pady=(0, 20))
 
-        # Description — texte libre
+        # Description — free text
         ctk.CTkLabel(self, text="Description", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.description_entry = ctk.CTkEntry(
             self, placeholder_text="Courses au marché", height=38)
         self.description_entry.pack(fill="x", padx=30, pady=(4, 14))
 
-        # Montant
+        # amount
         ctk.CTkLabel(self, text="Montant (€)", anchor="w",
                      font=ctk.CTkFont(size=13)).pack(fill="x", padx=30)
         self.montant_entry = ctk.CTkEntry(
@@ -61,7 +61,7 @@ class RetraitWindow(ctk.CTkToplevel):
             font=ctk.CTkFont(size=13),
         ).pack(fill="x", padx=30, pady=(4, 6))
 
-        # Label d'erreur
+        # error label
         self.error_label = ctk.CTkLabel(
             self, text="",
             font=ctk.CTkFont(size=11),
@@ -70,7 +70,7 @@ class RetraitWindow(ctk.CTkToplevel):
         )
         self.error_label.pack(fill="x", padx=30)
 
-        # Boutons
+        # buttons
         btns = ctk.CTkFrame(self, fg_color="transparent")
         btns.pack(fill="x", padx=30, pady=(20, 0))
 
@@ -124,10 +124,10 @@ class RetraitWindow(ctk.CTkToplevel):
         )
         retrait.execute()
 
-        # Vérifier le solde avant de fermer et de déclencher les callbacks.
-        # on_overdraft doit être appelé EN PREMIER : il utilise _notify_no_refresh
-        # (sans refresh), donc le Dashboard est encore vivant quand on_success
-        # arrive et déclenche le refresh qui le recrée.
+        # Check the balance before closing and triggering callbacks.
+        # on_overdraft must be called FIRST: it uses _notify_no_refresh
+        # (without refresh), so the Dashboard is still active when on_success
+        # runs and triggers a refresh that recreates it.
         new_balance  = get_account_balance(self.current_user_id)
         is_overdraft = new_balance < 0
 

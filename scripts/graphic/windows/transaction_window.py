@@ -6,7 +6,7 @@ from scripts.logic.app.dashboard_data import get_transactions_from_db
 
 
 class TransactionWindow(ctk.CTkFrame):
-    """Vue transactions avec camembert (top 5) + liste récente."""
+    """Transactions view with pie chart (top 5) + recent list."""
 
     def __init__(self, master, user_id: int = 1):
         super().__init__(master, corner_radius=0, fg_color="transparent")
@@ -41,7 +41,7 @@ class TransactionWindow(ctk.CTkFrame):
         body = ctk.CTkFrame(scroll, fg_color="transparent")
         body.pack(fill="x", pady=(0, 16))
 
-        # ── Camembert ──
+        # ── pie chart ──
         chart_frame = ctk.CTkFrame(body, corner_radius=14, fg_color="#1e1e2e")
         chart_frame.pack(side="left", fill="both", expand=True, padx=(0, 12))
 
@@ -53,7 +53,7 @@ class TransactionWindow(ctk.CTkFrame):
                      ).pack(anchor="w", padx=16, pady=(0, 8))
         PieChart(chart_frame, data=debits, height=220).pack(fill="x", padx=12, pady=(0, 12))
 
-        # ── Légende ──
+        # ── Legend ──
         legend_frame = ctk.CTkFrame(body, corner_radius=14, fg_color="#1e1e2e", width=230)
         legend_frame.pack(side="left", fill="y")
         legend_frame.pack_propagate(False)
@@ -68,17 +68,17 @@ class TransactionWindow(ctk.CTkFrame):
             row = ctk.CTkFrame(legend_frame, fg_color="transparent")
             row.pack(fill="x", padx=16, pady=5)
 
-            # Point couleur
+            # dot color
             dot = tk.Canvas(row, width=10, height=10, bg="#1e1e2e", highlightthickness=0)
             dot.pack(side="left", padx=(0, 10))
             dot.create_oval(0, 0, 10, 10, fill=pie_color(cat), outline="")
 
-            # Nom catégorie
+            # Category name
             ctk.CTkLabel(row, text=cat,
                          font=ctk.CTkFont(size=12),
                          anchor="w").pack(side="left", expand=True, fill="x")
 
-            # Bloc % + montant alignés à droite
+            # % block + amount aligned to the right
             right = ctk.CTkFrame(row, fg_color="transparent")
             right.pack(side="right")
 
@@ -92,11 +92,11 @@ class TransactionWindow(ctk.CTkFrame):
                          text_color="gray",
                          width=50, anchor="e").pack(side="left")
 
-            # Séparateur léger
+            # Light separator
             ctk.CTkFrame(legend_frame, height=1, fg_color="#2a2a3e").pack(
                 fill="x", padx=16)
 
-        # ── Transactions récentes ──
+        # ── List of recent transactions ──
         ctk.CTkLabel(scroll, text="Transactions récentes",
                      font=ctk.CTkFont(size=14, weight="bold"), anchor="w"
                      ).pack(anchor="w", pady=(4, 8))
