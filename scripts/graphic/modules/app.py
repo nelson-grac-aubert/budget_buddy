@@ -146,7 +146,7 @@ class BudgetBuddyApp(ctk.CTk):
             notifications=self._notifications,
         ).pack(fill="both", expand=True)
 
-    # ── Deconnexion ──
+    # ── logout ──
 
     def _logout(self):
         self._notifications.clear()
