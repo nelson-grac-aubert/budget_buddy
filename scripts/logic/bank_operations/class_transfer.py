@@ -2,11 +2,10 @@ from scripts.logic.bank_operations.class_bank_operation import BankOperation
 
 
 class Transfer:
-    """Enregistre un virement entre deux comptes.
-    Crée deux lignes Operation avec type_id=3 (transfer) :
-      - une sortie négative sur le compte source
-      - une entrée positive sur le compte destination
-    """
+    """Record a transfer between two accounts.
+Creates two Operation entries with type_id = 3 (transfer):
+  - a negative outgoing transaction from the source account
+  - a positive incoming transaction to the destination account"""
 
     def __init__(self, description, montant, categorie_id,
                  source_account_id, destination_account_id):
@@ -17,7 +16,7 @@ class Transfer:
         self.destination_account_id = destination_account_id
 
     def execute(self):
-        # Opération de débit sur le compte source (montant négatif)
+        # Debit operation on the source account (negative amount)
         sortie = BankOperation(
             description=self.description,
             montant=-self.montant,
@@ -28,7 +27,7 @@ class Transfer:
         sortie.save(operation_type_id=3)   # 3 = 'transfer'
         sortie.update_balance(-self.montant)
 
-        # Opération de crédit sur le compte destination (montant positif)
+        # Credit operation on the destination account (positive amount)
         entree = BankOperation(
             description=self.description,
             montant=self.montant,

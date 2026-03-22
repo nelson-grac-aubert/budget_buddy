@@ -14,20 +14,22 @@ class BankOperation:
 
     def generate_reference(self) -> str:
         """
-        Génère une référence unique d'environ 10 caractères basée sur les données de l'opération.
-        Exemple : 'DEP-4F9A2C1B3'
+        Generate a unique reference of about 10 characters based on operation data.
+        Example : 'DEP-4F9A2C1B3'
         """
+        # Create a base string using key operation attributes
         base = f"{self.description}{self.montant}{self.account_id}{self.date}"
+        # Generate a SHA-1 hash and keep the first 7 characters
         hash_part = hashlib.sha1(base.encode()).hexdigest()[:7].upper()
 
-        # 3 premières lettres de la description (nettoyées)
+        # Extract the first 3 alphanumeric characters from the description as a prefix
         prefix = ''.join(c for c in self.description.upper() if c.isalnum())[:3]
-
+        # Combine prefix and hash to form the reference
         return f"{prefix}-{hash_part}"
 
 
     def save(self, operation_type_id: int):
-        """Enregistre l'opération dans la table Operation."""
+        """Save the operation into the Operation table."""
         try:
             conn = get_connection()
             cursor = conn.cursor()
@@ -56,7 +58,7 @@ class BankOperation:
             conn.close()
 
     def update_balance(self, amount):
-        """ Update la somme sur le compte en banque """
+        """Update the account balance."""
         conn = get_connection()
         cursor = conn.cursor()
 
@@ -69,5 +71,8 @@ class BankOperation:
         conn.close()
 
     def execute(self):
-        """Méthode à redéfinir dans les classes enfants."""
+        """
+        Method to be implemented in child classes.
+        Defines how the operation should be executed.
+        """
         raise NotImplementedError("Cette méthode doit être implémentée.")
