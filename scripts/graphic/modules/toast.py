@@ -3,15 +3,14 @@ import customtkinter as ctk
 
 
 class Toast(ctk.CTkToplevel):
-    """Notification flottante qui disparaît automatiquement après 4 s.
-
-    Les toasts s'empilent verticalement à partir d'une position d'ancrage
-    transmise à la construction (anchor_x, anchor_y). Chaque nouveau toast
-    s'affiche sous le précédent, sans jamais se superposer.
+    """ Floating notification that disappears automatically after 4 seconds.
+        Toasts stack vertically starting from a specified anchor position
+        provided at construction (anchor_x, anchor_y). Each new toast appears
+        below the previous one, never overlapping.
     """
 
-    _WIDTH = 340  # largeur fixe (px)
-    _GAP   = 6    # espace entre deux toasts empilés (px)
+    _WIDTH = 340  # width  (px)
+    _GAP   = 6    # Space between two stacked toasts (px)
 
     _stack: list = []
 

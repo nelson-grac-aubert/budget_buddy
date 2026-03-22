@@ -42,13 +42,13 @@ def categories() -> list:
 
 
 def categories_depot() -> list:
-    """Catégories réservées aux dépôts (espèces / chèque)."""
+    """Categories reserved for deposits (cash / check)."""
     return ["Espèces", "Chèque"]
 
 
 def get_categorie_id(label: str) -> int:
-    """Résout le label d'une catégorie en son id dans OperationCategory.
-    Retourne 1 par défaut si non trouvé."""
+    """Resolves a category label to its ID in OperationCategory
+       returns 1 by default if not found."""
     try:
         conn = get_connection()
         cursor = conn.cursor()

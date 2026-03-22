@@ -47,7 +47,7 @@ class BudgetBuddyApp(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-    # ── Écrans pré-connexion ──
+    # ── Pre-login screens ──
 
     def _show_landing(self):
         self._clear_root()
@@ -74,7 +74,7 @@ class BudgetBuddyApp(ctk.CTk):
             on_back=self._show_landing,
         ).pack(fill="both", expand=True)
 
-    # ── Après connexion réussie ──
+    # ── Pre-login screens success ──
 
     def _on_login_success(self, user_id, is_admin: bool = False):
         self.current_user_id = user_id
@@ -88,7 +88,7 @@ class BudgetBuddyApp(ctk.CTk):
             ).pack(fill="both", expand=True, padx=20, pady=20)
             return
 
-        # ── Routing utilisateur normal ──
+        # ── Routing regular user ──
         self.sidebar = Sidebar(
             self.root_frame,
             nav_commands={
@@ -106,7 +106,7 @@ class BudgetBuddyApp(ctk.CTk):
 
         self._show_dashboard()
 
-    # ── Vues principales ──
+    # ── main views ──
 
     def _show_dashboard(self):
         self._clear_main()
@@ -146,14 +146,14 @@ class BudgetBuddyApp(ctk.CTk):
             notifications=self._notifications,
         ).pack(fill="both", expand=True)
 
-    # ── Déconnexion ──
+    # ── Deconnexion ──
 
     def _logout(self):
         self._notifications.clear()
         self.current_user_id = None
         self._show_landing()
 
-    # ── Gestion des notifications ──
+    # ── Notification management ──
 
     def _on_new_notification(self, title: str, message: str, kind: str = "success"):
         self._notifications.append({
@@ -164,7 +164,7 @@ class BudgetBuddyApp(ctk.CTk):
         })
         self.sidebar.add_notification()
 
-    # ── Fenêtres secondaires ──
+    # ── second window ──
 
     def _open_account_management(self):
         if self._account_window is None or not self._account_window.winfo_exists():

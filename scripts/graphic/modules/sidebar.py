@@ -2,7 +2,7 @@ import customtkinter as ctk
  
  
 class Sidebar(ctk.CTkFrame):
-    """Barre de navigation latérale avec badge de notifications."""
+    """Sidebar navigation with notification badge."""
  
     NAV_ICONS = {
         "Accueil":       "🏠",
@@ -28,12 +28,12 @@ class Sidebar(ctk.CTkFrame):
             justify="left",
         ).pack(pady=(28, 24), padx=20, anchor="w")
  
-        # Boutons de navigation
+        # navigation buttons
         for label, cmd in nav_commands.items():
             icon = self.NAV_ICONS.get(label, "•")
  
             if label == "Notifications":
-                # Conteneur pour le bouton + badge
+                # Container for button with badge
                 row = ctk.CTkFrame(self, fg_color="transparent")
                 row.pack(fill="x", padx=12, pady=3)
  
@@ -50,7 +50,7 @@ class Sidebar(ctk.CTkFrame):
                 )
                 self._notif_btn.pack(side="left", fill="x", expand=True)
  
-                # Badge rouge (caché par défaut)
+                # Red badge (hide by default)
                 self._badge_label = ctk.CTkLabel(
                     row,
                     text="",
@@ -75,10 +75,10 @@ class Sidebar(ctk.CTkFrame):
                     command=cmd,
                 ).pack(fill="x", padx=12, pady=3)
  
-        # Espaceur
+        # spacer
         ctk.CTkFrame(self, fg_color="transparent").pack(fill="both", expand=True)
  
-        # Bouton compte (bas)
+        # button account(bottom)
         ctk.CTkButton(
             self,
             text="⚙️  Account",
@@ -92,14 +92,14 @@ class Sidebar(ctk.CTkFrame):
         ).pack(fill="x", padx=12, pady=(0, 16))
  
     def add_notification(self):
-        """Incrémente le badge de notifications."""
+        """Increment the notification badge."""
         self._notif_count += 1
         if self._badge_label:
             self._badge_label.configure(text=str(self._notif_count))
             self._badge_label.pack(side="right", padx=(4, 0))
  
     def clear_notifications(self):
-        """Remet le badge à zéro (appeler quand l'utilisateur ouvre Notifications)."""
+        """Reset the notification badge to zero (call when the user opens Notifications)."""
         self._notif_count = 0
         if self._badge_label:
             self._badge_label.configure(text="")

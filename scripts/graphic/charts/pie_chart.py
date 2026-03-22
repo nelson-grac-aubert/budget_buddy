@@ -3,7 +3,7 @@ import math
 
 
 class PieChart(tk.Canvas):
-    """Camembert des dépenses par motif."""
+    """Pie chart of expenses by category."""
 
     def __init__(self, master, data: list, **kwargs):
         """data : liste de (label, valeur, couleur_hex)"""
