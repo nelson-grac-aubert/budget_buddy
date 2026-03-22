@@ -6,7 +6,7 @@ from mysql.connector import Error
 DB_NAME = "budget_buddy"
 
 def validate_password(password):
-    # Expression régulière ou RegEx : chaine de filtres pour checker des strings
+    # Regular expression (RegEx): a pattern used to validate or match strings
     """Check password strength."""
     pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[,@$!%*?&]).{10,}$'
     return re.match(pattern, password)
@@ -113,11 +113,11 @@ def handle_login(email, password):
     if not email or not password:
         return False, "Email and password are required"
 
-    # ── Compte admin hardcodé ──
+    # Hardcoded admin accoun
     if email == "admin" and password == "admin":
         return True, "Login Successful", 0, "admin"
 
-    # ── Utilisateur normal ──
+    # regular user
     user = get_user_by_email(email)
 
     if user is None:

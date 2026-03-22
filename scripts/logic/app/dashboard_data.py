@@ -141,10 +141,10 @@ def get_transactions_from_db(user_id: int):
     return formatted
 
 
-# ── Admin ──
+# Admin 
 
 def get_all_accounts() -> list:
-    """Retourne tous les comptes avec infos utilisateur et solde."""
+    """Retrieve all accounts along with associated user details and current balance."""
     connection = get_connection()
     cursor = connection.cursor(dictionary=True)
     cursor.execute("""
