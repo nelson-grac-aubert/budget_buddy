@@ -22,16 +22,43 @@ For any help with MySQL, please consult the official docs : https://dev.mysql.co
 Follow the official installer: https://dev.mysql.com/downloads/installer/
 Create a root user and set a password if prompted.
 2. Install Python dependencies  
-```pip install mysql-connector-python bcrypt customtkinter matplotlib```
-3. Create the database user
+```bash
+pip install mysql-connector-python bcrypt customtkinter matplotlib
+```
+4. Create the database user
 Open a shell (cmd, PowerShell) and log into MySQL with your root account:  
-```mysql -u root -p```  
-Enter your password, then run:```CREATE USER 'budget_buddy_test'@'%' IDENTIFIED BY 'strong_password_budget_buddies';
+```mysql
+mysql -u root -p
+```  
+Enter your password, then run:
+```mysql
+CREATE USER 'budget_buddy_test'@'%' IDENTIFIED BY 'strong_password_budget_buddies';
 GRANT ALL PRIVILEGES ON *.* TO 'budget_buddy_test'@'%' WITH GRANT OPTION;
-FLUSH PRIVILEGES;``` 
-5. Run the app
-```python main.py```
+FLUSH PRIVILEGES;
+``` 
+6. Run the app
+```bash
+python main.py
+```
 Or launch the .exe build find in releases
+
+## Build with pyinstaller
+```bash
+pyinstaller --noconsole --onefile --name "Budget Buddy" --icon "assets/money_bag.ico" main.py
+```
+
+## Dev Difficulties
+- First time using SQL and MySQL : connect to the db on different devices.
+- First time using CustomTkinter : discover its syntax
+- Some refactoring needed despite a long time of conception (UML, Merise)
+
+## Future improvements
+
+- Host the database remotely
+- Add edit and delete bank operations (CRUD)
+- Add delete account
+- Add different secured admin accounts to manage different client accounts
+- Add bank transfer with name, email, rather than account ID
 
 ## Authors
 - Cécilia Perana : Front-end
