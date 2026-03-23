@@ -13,23 +13,24 @@ A lightweight budget manager app made for La Plateforme_ IT school.
 - Spending breakdown : pie chart of your top 5 expense categories with percentage and total per category  
 - Notifications : in-app notification centre with a badge counter on the sidebar; toast popups appear after each operation  
 - Account management : dedicated window to view and manage account settings
+- Admin mode for an overview of all accounts.
 
 ## Dependencies
 Our program uses MySQL and the Python library MySQL Connector.
+For any help with MySQL, please consult the official docs : https://dev.mysql.com/doc/
 1. Install MySQL
 Follow the official installer: https://dev.mysql.com/downloads/installer/
 Create a root user and set a password if prompted.
 2. Install Python dependencies  
-bash```pip install mysql-connector-python bcrypt customtkinter matplotlib```
+```pip install mysql-connector-python bcrypt customtkinter matplotlib```
 3. Create the database user
 Open a shell (cmd, PowerShell) and log into MySQL with your root account:  
-bash```mysql -u root -p```
-Enter your password, then run:  
-sql```CREATE USER 'budget_buddy_test'@'%' IDENTIFIED BY 'strong_password_budget_buddies';
+```mysql -u root -p```  
+Enter your password, then run:```CREATE USER 'budget_buddy_test'@'%' IDENTIFIED BY 'strong_password_budget_buddies';
 GRANT ALL PRIVILEGES ON *.* TO 'budget_buddy_test'@'%' WITH GRANT OPTION;
-FLUSH PRIVILEGES;```
-4. Run the app
-bashpython main.py
+FLUSH PRIVILEGES;``` 
+5. Run the app
+```python main.py```
 Or launch the .exe build find in releases
 
 ## Authors
